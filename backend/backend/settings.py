@@ -37,6 +37,15 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+
+    # Tools
+    'rest_framework',
+    'rest_framework.authtoken',
+    'rest_auth',
+    'corsheaders',
+
+    # Apps
+    'core',
 ]
 
 MIDDLEWARE = [
@@ -118,3 +127,18 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/3.1/howto/static-files/
 
 STATIC_URL = '/static/'
+
+
+#################################################################
+    ##  Rest Framework - turn on when in production ##
+#################################################################
+# REST_FRAMEWORK = {
+#     'DEFAULT_RENDERER_CLASSES': (
+#         'rest_framework.renderers.JSONRenderer',
+#     )
+# }
+
+#################################################################
+    ##  (CORS) Cross-Origin Resource Sharing Settings ##
+#################################################################
+CORS_ORIGIN_ALLOW_ALL = True
