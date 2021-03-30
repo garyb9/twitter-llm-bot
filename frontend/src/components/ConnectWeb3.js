@@ -1,6 +1,6 @@
 import React from 'react';
-import { Web3, Web3Provider } from 'web3';
-import { Web3ReactProvider, createWeb3ReactRoot } from '@web3-react/core'
+import { Web3Provider } from 'web3';
+import { Web3ReactProvider} from '@web3-react/core'
 import { InjectedConnector } from '@web3-react/injected-connector'
 
 function getLibrary(provider) {
