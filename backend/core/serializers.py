@@ -10,7 +10,12 @@ class TokenURISerializer(serializers.ModelSerializer):
     class Meta:
         model = TokenURI
         fields = (
-            'id', 'address',
+            'id', 
+            'address',
+            'name',
+            'description',
+            'imageURL',
+            'traits',
         )
         read_only_Fields = ('id',)
         extra_kwargs = {

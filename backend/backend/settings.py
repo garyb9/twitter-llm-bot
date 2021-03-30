@@ -130,16 +130,9 @@ USE_TZ = True
 STATIC_URL = '/static/'
 
 
-#################################################################
-    ##  Rest Framework - turn on when in production ##
-#################################################################
-# REST_FRAMEWORK = {
-#     'DEFAULT_RENDERER_CLASSES': (
-#         'rest_framework.renderers.JSONRenderer',
-#     )
-# }
+# For development & production
 
-#################################################################
-    ##  (CORS) Cross-Origin Resource Sharing Settings ##
-#################################################################
-CORS_ORIGIN_ALLOW_ALL = True
+try:
+    from .local_settings import *
+except ImportError:
+    pass
