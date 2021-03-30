@@ -16,13 +16,18 @@ class TokenURIManager(models.Manager):
     """ Represents a basic TokenURI Model Manager."""
     
     def create_TokenURI(self, **validated_data):
-        pass
+        tokenURI = TokenURI.objects.get_or_create(
+            address=validated_data["address"],
+        )[0]
+        tokenURI.save(using=self._db)
+        return tokenURI
 
 
 class TokenURI(models.Model):
     """ Represents a basic TokenURI Model."""
 
     id      = models.UUIDField(default=uuid.uuid4, primary_key=True, editable=False, verbose_name=_('Unique ID'))
+    address = models.CharField(default=None, max_length=255, verbose_name=_('Wallet Address'))
 
     objects = TokenURIManager()
 
