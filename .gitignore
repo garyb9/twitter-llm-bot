@@ -133,3 +133,6 @@ dmypy.json
 
 # node
 node_modules/
+
+# local
+local_settings
