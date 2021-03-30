@@ -1,10 +1,15 @@
 import React from 'react';
 import Web3 from "web3";
 import axios from "axios";
+// import { useHistory, BrowserRouter, Route} from "react-router-dom";
 import * as settings from "../settings";
+import Box from '@material-ui/core/Box';
+
 
 export default function CheckWeb3(props) {
+  // const history = useHistory();
   const [isWaiting, setIsWaiting] = React.useState(false);
+  const [address, setAddress] = React.useState("");
 
   const handleButtonClick = async (e) => {
     var web3 = new Web3();
@@ -55,7 +60,9 @@ export default function CheckWeb3(props) {
         })
         .catch((err) => {
           console.log(err);
-        });
+    });
+    
+    setAddress(address);
   };
 
   return (
@@ -65,6 +72,10 @@ export default function CheckWeb3(props) {
         <button disabled={isWaiting} onClick={handleButtonClick}>
           Connect Metamask
         </button> 
+        
+        <Box bgcolor={address? "success.main" : "primary.main"} color="primary.contrastText" p={2}>
+          Metamask Address: {address}
+        </Box>
 
       </header>
     </div>
