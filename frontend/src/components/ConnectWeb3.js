@@ -7,24 +7,22 @@ function getLibrary(provider) {
   return new Web3Provider(provider) // this will vary according to whether you use e.g. ethers or web3.js
 }
 
-const Web3ReactProviderReloaded = createWeb3ReactRoot('anotherOne')
-export const injected = new InjectedConnector({ 
-    supportedChainIds: [
-        1, // Mainnet
-        3, // Ropsten
-        4, // Rinkeby
-        5, // Goerli
-        42 // Kovan
-    ] 
-})
 
+export default function ConnectWeb3 () {
+    // const Web3ReactProviderReloaded = createWeb3ReactRoot('anotherOne')
+    const injected = new InjectedConnector({ 
+        supportedChainIds: [
+            1, // Mainnet
+            3, // Ropsten
+            4, // Rinkeby
+            5, // Goerli
+            42 // Kovan
+        ] 
+    })
 
-function App () {
   return (
     <Web3ReactProvider getLibrary={getLibrary}>
-      <Web3ReactProviderReloaded getLibrary={getLibrary}>
-        {/* <...> */}
-      </Web3ReactProviderReloaded>
+      {console.log(injected)}
     </Web3ReactProvider>
   )
 }
