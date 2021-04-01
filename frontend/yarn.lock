@@ -11713,6 +11713,11 @@
     "is-docker" "^2.0.0"
     "is-wsl" "^2.1.1"
 
+"openzeppelin-solidity@^4.0.0":
+  "integrity" "sha512-m05OqHUXR6oc3pbJcYpFtyAYMwH5Ot0p/RlbKVEDnAuFrNsyjQd5bYyqvf62Jz7JQX/w21LGguyFsDrU38gdYQ=="
+  "resolved" "https://registry.npmjs.org/openzeppelin-solidity/-/openzeppelin-solidity-4.0.0.tgz"
+  "version" "4.0.0"
+
 "opn@^5.5.0":
   "integrity" "sha512-PqHpggC9bLV0VeWcdKhkpxY+3JTzetLSqTCWL/z/tFIbI6G8JCjondXklT1JinczLz2Xib62sSp0T/gKT4KksA=="
   "resolved" "https://registry.npmjs.org/opn/-/opn-5.5.0.tgz"
@@ -14634,7 +14639,7 @@
     "semver" "^5.5.0"
     "tmp" "0.0.33"
 
-"solc@0.7.3":
+"solc@^0.7.3", "solc@0.7.3":
   "integrity" "sha512-GAsWNAjGzIDg7VxzP6mPjdurby3IkGCjQcM8GFYZT6RyaoUZKmMU6Y7YwG+tFGhv7dwZ8rmR4iwFDrrD99JwqA=="
   "resolved" "https://registry.npmjs.org/solc/-/solc-0.7.3.tgz"
   "version" "0.7.3"
