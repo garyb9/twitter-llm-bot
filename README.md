@@ -105,19 +105,7 @@ curl https://xxxxxxx.execute-api.us-east-1.amazonaws.com/dev/
 Which should result in the following response:
 
 ```
-{"message":"Hello from root!"}
-```
-
-Calling the `/hello` path with:
-
-```bash
-curl https://xxxxxxx.execute-api.us-east-1.amazonaws.com/dev/hello
-```
-
-Should result in the following response:
-
-```bash
-{"message":"Hello from path!"}
+{"message":"root"}
 ```
 
 If you try to invoke a path or method that does not have a configured handler, e.g. with:
