@@ -1,6 +1,6 @@
 import unittest
 from test_base import TestBase
-from log import log
+from utils.log import log
 log = log.getLogger('TestApp')
 
 class TestApp(TestBase):

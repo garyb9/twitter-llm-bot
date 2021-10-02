@@ -7,8 +7,8 @@ import unittest
 from time import time
 sys.path.append(os.path.join(os.path.dirname(__file__), '..'))
 from app import app, headers
-from log import log
-log = log.getLogger('TestApp')
+from utils.log import log
+log = log.getLogger('TestBase')
 
 
 class TestBase(unittest.TestCase):

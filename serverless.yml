@@ -1,6 +1,7 @@
 service: aws-python-flask-api-project
 
 frameworkVersion: '2'
+# useDotenv: true
 
 custom:
   wsgi:

@@ -1,4 +1,7 @@
+import os
+from dotenv import load_dotenv
 from flask import Flask, jsonify, make_response
+load_dotenv(os.path.join(os.path.dirname(__file__), '.env'))
 
 # ------------------------------------------------------------
 #                   Flask Configuration
