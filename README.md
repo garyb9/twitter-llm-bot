@@ -1,4 +1,4 @@
-# NFT-Minter
+# AWS Smart Contract Deployer
 
 ```WIP - Unfinished as of this commit!```
 
