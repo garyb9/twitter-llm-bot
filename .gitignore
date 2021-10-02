@@ -139,3 +139,7 @@ local_settings
 
 # serverless
 .serverless
+
+#Hardhat files
+cache
+artifacts
