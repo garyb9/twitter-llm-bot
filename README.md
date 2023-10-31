@@ -60,7 +60,7 @@ Please refer to [Hugging Face cache setup](https://huggingface.co/docs/transform
 To run the Twitter bot, execute the following command:
 
 ```bash
-python .\src\app.py
+python ./src/app.py
 ```
 The bot will start generating and posting tweets based on the prompts you specify in the code. You can customize the bot's behavior by modifying the prompts.
 
