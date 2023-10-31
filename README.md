@@ -34,10 +34,14 @@ source venv/bin/activate  # On Windows, use 'venv\Scripts\activate'
 pip install -r requirements.txt
 ```
 
-## Confihuration
+## Configuration
 Before you can use the Twitter bot, you need to set up the necessary configuration. Create a .env file in the project root directory with the following content:
 
 ```.env
+[HuggingFace]
+HUGGINGFACE_HUB_CACHE = path_to_cache
+TRANSFORMERS_CACHE = path_to_cache
+
 [Twitter]
 TWITTER_API_KEY = your_consumer_key
 TWITTER_API_KEY_SECRET = your_consumer_secret
@@ -48,6 +52,9 @@ TWITTER_ACCESS_TOKEN_SECRET = your_access_token_secret
 OPENAI_ORG_ID = your_org_id
 OPENAI_API_KEY = your_api_key
 ```
+
+*** Note - its important to set the HuggingFace cache paths. Otherwise HF will download pre-trained models into default cache (might overwhelm with size)
+refer to [Hugging Face cache setup](https://huggingface.co/docs/transformers/installation#cache-setup) guide for more information.
 
 ## Usage
 To run the Twitter bot, execute the following command:
