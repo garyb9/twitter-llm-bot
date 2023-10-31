@@ -53,8 +53,8 @@ OPENAI_ORG_ID = your_org_id
 OPENAI_API_KEY = your_api_key
 ```
 
-*** Note - its important to set the HuggingFace cache paths. Otherwise HF will download pre-trained models into default cache (might overwhelm with size)
-refer to [Hugging Face cache setup](https://huggingface.co/docs/transformers/installation#cache-setup) guide for more information.
+*** Note - its important to set the HuggingFace cache paths. Otherwise HF will download pre-trained models into default cache (might overwhelm with size).
+Please refer to [Hugging Face cache setup](https://huggingface.co/docs/transformers/installation#cache-setup) guide for more information.
 
 ## Usage
 To run the Twitter bot, execute the following command:
