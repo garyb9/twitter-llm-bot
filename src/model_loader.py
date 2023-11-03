@@ -2,15 +2,7 @@ import os
 import json
 import logging
 import subprocess
-from transformers import AutoModelForCausalLM, AutoTokenizer
-
-"""
-    Model Loader loads models from Hugging Face model hub: 
-    https://huggingface.co/models
-    
-    Suggestion - its better to use `download_models_git()` if low on resources,
-    since git has better handling of downloading of large file than hugging face's `from_pretrained` downloader.
-"""
+from transformers import pipeline,  AutoTokenizer, AutoModelForSeq2SeqLM
 
 
 class ModelLoader():
@@ -56,7 +48,8 @@ class ModelLoader():
                         f"Model {name} found in {directory}, skipping download")
                 else:
                     logging.info(f"Downloading {name} model...")
-                    model = AutoModelForCausalLM.from_pretrained(details['id'])
+                    model = AutoModelForSeq2SeqLM.from_pretrained(
+                        details['id'])
                     tokenizer = AutoTokenizer.from_pretrained(details['id'])
                     logging.info(f"Saving pretrained {name} model...")
                     model.save_pretrained(directory)
@@ -84,7 +77,7 @@ class ModelLoader():
 
                     # Load the model and tokenizer
                     logging.info(f"Loading model and tokenizer of {name}")
-                    model = AutoModelForCausalLM.from_pretrained(
+                    model = AutoModelForSeq2SeqLM.from_pretrained(
                         directory, local_files_only=True)
                     tokenizer = AutoTokenizer.from_pretrained(
                         directory, local_files_only=True)
@@ -98,35 +91,3 @@ class ModelLoader():
             except subprocess.CalledProcessError as e:
                 logging.info(f"Error getting model {name}: {e}")
         logging.info(f"Done loading models")
-
-
-def sample_prompt_test(model_loader: ModelLoader):
-    model = AutoModelForCausalLM.from_pretrained(
-        model_loader.models_pretrained_dir, local_files_only=True)
-    tokenizer = AutoTokenizer.from_pretrained(
-        model_loader.models_pretrained_dir, local_files_only=True)
-
-    # Set the device to GPU if available, otherwise use CPU
-    import torch
-    device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
-    model.to(device)
-
-    # Define a simple text prompt
-    prompt = "Once upon a time, in a land far, far away, there was a"
-
-    # Generate text using the model
-    input_ids = tokenizer.encode(prompt, return_tensors="pt").to(device)
-    output = model.generate(input_ids, max_length=100, num_return_sequences=1,
-                            no_repeat_ngram_size=2, top_k=50, top_p=0.95)
-
-    # Decode and print the generated text
-    generated_text = tokenizer.decode(output[0], skip_special_tokens=True)
-    print("Generated Text:")
-    print(generated_text)
-
-
-if __name__ == "__main__":
-    import setup_env
-    model_loader = ModelLoader()
-    model_loader.download_models_git()
-    # sample_prompt_test(model_loader)
