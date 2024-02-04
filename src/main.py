@@ -9,7 +9,7 @@ from server import run_server
 # from openai.openai_llm_chains import llm_chains
 
 
-async def main():
+async def main() -> None:
     scheduler.start()
     await run_server()
 

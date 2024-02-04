@@ -11,8 +11,8 @@ from uvicorn import Config, Server
 from contextlib import asynccontextmanager
 
 
-async def run_server():
-    logging.info(f'Application started as Producer')
+async def run_server() -> None:
+    logging.info(f'Application started')
 
     config = Config(
         app=app,
@@ -24,7 +24,7 @@ async def run_server():
 
 
 @asynccontextmanager
-async def lifespan(app: FastAPI):
+async def lifespan(app: FastAPI) -> None:
     # Startup
     logging.info("Initializing resources")
 
