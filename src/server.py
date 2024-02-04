@@ -1,41 +1,43 @@
-from flask import Flask, jsonify, make_response
+import logging
+from uvicorn import Config, Server
 
-# ------------------------------------------------------------
-#                   Flask Configuration
-# ------------------------------------------------------------
-
-app = Flask(__name__)
-
-headers = {
-    'charset': 'utf-8',
-    'Content-Type': 'application/json',
-}
-
-
-def response(message={}, code=200):
-    response = jsonify(message=message, headers=headers)
-    return make_response(response, code)
+from redis_conn import create_redis_connection
+import os
+import logging
+from redis_conn import create_redis_connection
+from fastapi import FastAPI
+from redis_conn import create_redis_connection
+from uvicorn import Config, Server
+from contextlib import asynccontextmanager
 
 
-def error_response(error='', code=400):
-    response = jsonify(error=error, headers=headers)
-    return make_response(response, code)
+async def run_server():
+    logging.info(f'Application started as Producer')
+
+    config = Config(
+        app=app,
+        host=os.getenv("SERVER_HOST", "localhost"),
+        port=int(os.getenv("SERVER_PORT", 8000))
+    )
+    server = Server(config)
+    await server.serve()
 
 
-# ------------------------------------------------------------
-#                   API endpoints
-# ------------------------------------------------------------
+@asynccontextmanager
+async def lifespan(app: FastAPI):
+    # Startup
+    logging.info("Initializing resources")
 
-@app.route("/")
-def root():
-    return response(message='root')
+    app.state.redis_client = await create_redis_connection(
+        host=os.getenv("REDIS_HOST", "localhost"),
+        port=int(os.getenv("REDIS_PORT", 6379)),
+        db=int(os.getenv("REDIS_DB", 0)),
+    )
+
+    yield
+    # Shutdown
+    await app.state.redis_client.aclose()
+    logging.info("Resources have been cleaned up")
 
 
-@app.errorhandler(400)
-def bad_request(error='Bad request!'):
-    return error_response(error=error, code=400)
-
-
-@app.errorhandler(404)
-def not_found(error='Not found!'):
-    return error_response(error=error, code=404)
+app = FastAPI(lifespan=lifespan)

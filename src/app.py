@@ -1,19 +1,29 @@
+import asyncio
 import os
 import sys
 import logging
 import setup_env
 from scheduler import scheduler
-from server import app
-from twitter.twitter_client import twitter_client
-from openai.openai_llm_chains import llm_chains
+from server import run_server
+# from twitter.twitter_client import twitter_client
+# from openai.openai_llm_chains import llm_chains
 
-# Run
+
+async def main():
+    scheduler.start()
+    await run_server()
+
+# RUn
 if __name__ == "__main__":
     try:
-        scheduler.start()  # Start scheduler
-        logging.info("Press Ctrl+C to exit.")
-        app.run(port=int(os.getenv('PORT', 3000)))  # Run server
-    except (KeyboardInterrupt, SystemExit):
-        logging.info('Got SIGTERM! Terminating...')
-        scheduler.shutdown()
+        logging.info("Application running - Press Ctrl+C to exit.")
+        asyncio.run(main())
+    except KeyboardInterrupt:
+        logging.info("Application interrupted. Shutting down gracefully...")
+        sys.exit(0)
+    except Exception as e:
+        logging.error(f"An unexpected error occurred: {e}")
+        sys.exit(1)
+    finally:
+        logging.info("Application has been shut down")
         sys.exit(0)
