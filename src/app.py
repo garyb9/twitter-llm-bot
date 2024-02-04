@@ -4,8 +4,8 @@ import logging
 import setup_env
 from scheduler import scheduler
 from server import app
-from twitter_client import twitter_client
-from openai_llm_chains import llm_chains
+from twitter.twitter_client import twitter_client
+from openai.openai_llm_chains import llm_chains
 
 # Run
 if __name__ == "__main__":
