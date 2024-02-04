@@ -1,7 +1,7 @@
 import setup_env
 import logging
 import torch
-from models.model_loader import ModelLoader
+from hf_models.model_loader import ModelLoader
 from transformers import AutoTokenizer, AutoModelForSeq2SeqLM
 
 model_loader = ModelLoader()

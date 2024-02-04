@@ -1,6 +1,6 @@
 import setup_env
 import logging
-from models.model_loader import ModelLoader
+from hf_models.model_loader import ModelLoader
 from langchain.llms import HuggingFacePipeline
 from langchain.prompts import PromptTemplate
 from langchain.chains import LLMChain
