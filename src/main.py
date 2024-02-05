@@ -13,7 +13,7 @@ async def main() -> None:
     scheduler.start()
     await run_server()
 
-# RUn
+# Run
 if __name__ == "__main__":
     try:
         logging.info("Application running - Press Ctrl+C to exit.")

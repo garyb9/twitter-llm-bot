@@ -1,4 +1,4 @@
 [tool.pytest.ini_options]
 pythonpath = [
-  ".", "src", "test"
+  ".", "src", "test", "data, "examples"
 ]

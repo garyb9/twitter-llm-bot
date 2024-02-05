@@ -46,7 +46,12 @@ async def generate_text_async(
     return formatted_content
 
 
-async def generate_image_async(prompt, n=1, model=models[2]):
+async def generate_image_async(
+    prompt,
+    n=1,
+    model=models[2],
+    formatter: Callable[[List[dict]], List[dict]] = None
+):
     """
     Asynchronously generates images using DALL·E 3 based on a text prompt.
 
@@ -54,15 +59,14 @@ async def generate_image_async(prompt, n=1, model=models[2]):
         prompt (str): The input text prompt for the image generation.
         n (int): Number of images to generate.
         model (str): The model to use for generation ("dalle-3").
+        formatter (Callable[[List[dict]], List[dict]]): A callback function to format or process the image generation results.
     """
-    async with httpx.AsyncClient() as client:
-        response = await client.post(
-            "https://api.openai.com/v1/images/generations",
-            headers=headers,
-            json={
-                "model": model,
-                "prompt": prompt,
-                "n": n
-            }
-        )
-        return response.json()
+    response = await client.images.create(
+        model=model,
+        prompt=prompt,
+        n=n
+    )
+    
+    raw_images = response['data']
+    formatted_images = formatter(raw_images) if formatter else raw_images
+    return formatted_images
