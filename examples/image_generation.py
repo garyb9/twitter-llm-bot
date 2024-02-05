@@ -22,7 +22,7 @@ async def main() -> None:
         },
         {
             "role": "user",
-            "content": f"Please generate tweets inspired by the philosopher {philosopher}."
+            "content": f"Generate tweets inspired by the philosopher {philosopher}."
         }
     ]
     
@@ -35,20 +35,11 @@ async def main() -> None:
     
     logging.info(json.dumps(generated_response, indent=4))
     
-    messages = [
-        {
-            "role": "system",
-            "content": "I am a tweet and quote image visualizer. Visualize with high definition the given quote. Do not visualize the person mentioned, if mentioned."
-        },
-        {
-            "role": "user",
-            "content": f"Please visualize the following quote: ```{generated_response[0]}```."
-        }
-    ]
+    generated_images = await openai.generate_image_async(
+        prompt=f"Visualize the following quote: ```{generated_response[0]}```. Omit any text from the image. Use oil painting style."
+    )
     
-    generated_image = await openai.generate_image_async(prompt=messages)
-    img = Image.open(BytesIO(generated_image))
-    img.show()
+    generated_images[0].show()
 
 # Run
 if __name__ == "__main__":

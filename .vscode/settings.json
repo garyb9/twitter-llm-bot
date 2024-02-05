@@ -3,5 +3,8 @@
     "editor.formatOnSave": true,
     "python.analysis.extraPaths": [
         "./src"
-    ]
+    ],
+    "terminal.integrated.env.linux": {
+        "GTK_PATH": ""
+    },
 }

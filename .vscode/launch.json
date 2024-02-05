@@ -16,6 +16,14 @@
             "module": "pytest",
             "console": "integratedTerminal",
             "cwd": "${workspaceFolder}"
-        }
+        },
+        {
+            "name": "Python: Example",
+            "type": "debugpy",
+            "request": "launch",
+            "program": "${workspaceFolder}/examples/image_generation.py",
+            "console": "integratedTerminal",
+            "cwd": "${workspaceFolder}"
+        },
     ]
 }

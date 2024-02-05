@@ -1,8 +1,10 @@
 import os
-from typing import Callable, List
-import httpx
+from typing import Callable, List, Union
+from PIL import Image
 from openai import AsyncOpenAI
-
+from io import BytesIO
+from base64 import decodebytes
+from PIL import Image
 openai_api_key = os.getenv('OPENAI_API_KEY')
 openai_organization = os.getenv('OPENAI_ORG_ID')
 
@@ -16,16 +18,16 @@ client = AsyncOpenAI(
     organization=openai_organization,
 )
 
-models = ["gpt-4-turbo-preview", "gpt-3.5-turbo", "dalle-3"]
+models = ["gpt-4-turbo-preview", "gpt-3.5-turbo", "dall-e-3"]
 
 
 async def generate_text_async(
-    prompt,
+    prompt: Union[str, List[str]],
     model=models[1],
     temperature=0.7,
     max_tokens=100,
     formatter: Callable[[str], List[str]] = None
-):
+) -> Union[str, List[str]]:
     """
     Asynchronously generates text using the specified GPT model.
 
@@ -47,10 +49,9 @@ async def generate_text_async(
 
 
 async def generate_image_async(
-    prompt,
+    prompt:str,
     n=1,
     model=models[2],
-    formatter: Callable[[List[dict]], List[dict]] = None
 ):
     """
     Asynchronously generates images using DALL·E 3 based on a text prompt.
@@ -61,12 +62,16 @@ async def generate_image_async(
         model (str): The model to use for generation ("dalle-3").
         formatter (Callable[[List[dict]], List[dict]]): A callback function to format or process the image generation results.
     """
-    response = await client.images.create(
+    response = await client.images.generate(
         model=model,
         prompt=prompt,
-        n=n
+        n=n,
+        response_format='b64_json'
     )
     
-    raw_images = response['data']
-    formatted_images = formatter(raw_images) if formatter else raw_images
-    return formatted_images
+    # raw_images = response.data
+    # b64_json = raw_images[0].b64_json
+    images = [
+        Image.open(BytesIO(decodebytes(bytes(b64_img.b64_json, "utf-8")))) for b64_img in response.data
+    ]    
+    return images
