@@ -7,5 +7,3 @@ twitter_client = tweepy.Client(
     access_token=os.getenv('TWITTER_ACCESS_TOKEN'),
     access_token_secret=os.getenv('TWITTER_ACCESS_TOKEN_SECRET')
 )
-
-# response = twitter_client.create_tweet(text="Am Israel Chai!")
