@@ -1,20 +1,20 @@
+
 import os
 import sys
-import json
-import logging
 import asyncio
+import logging
+import json
 sys.path.append(
     os.path.abspath(os.path.join(os.path.dirname(__file__), '..', 'src'))
 )
 import setup_env
+from typing import List
 import llm.openai as openai
 from utils import str_to_list_formatter
-from io import BytesIO
-from PIL import Image
 
-async def main() -> None:
-    philosopher = 'Max Stirner'
-    
+
+async def tweet_generation(philosopher: str = 'Max Stirner') -> List[str]:
+
     messages = [
         {
             "role": "system",
@@ -25,20 +25,27 @@ async def main() -> None:
             "content": f"Generate tweets inspired by the philosopher {philosopher}."
         }
     ]
-    
+
     generated_response = await openai.generate_text_async(
         messages,
         temperature=0.9,
         max_tokens=1500,
         formatter=str_to_list_formatter
     )
-    
-    logging.info(json.dumps(generated_response, indent=4))
-    
+
+    logging.info(
+        f"Tweets generated:\n{json.dumps(generated_response, indent=4)}"
+    )
+    return generated_response
+
+
+async def main() -> None:
+    generated_response = await tweet_generation()
+
     generated_images = await openai.generate_image_async(
         prompt=f"Visualize the following quote: ```{generated_response[0]}```. Omit any text from the image. Use oil painting style."
     )
-    
+
     generated_images[0].show()
 
 # Run

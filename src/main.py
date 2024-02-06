@@ -3,7 +3,7 @@ import os
 import sys
 import logging
 import setup_env
-from scheduler import scheduler
+from scheduler.scheduler import scheduler
 from server import run_server
 # from twitter.twitter_client import twitter_client
 # from openai.openai_llm_chains import llm_chains

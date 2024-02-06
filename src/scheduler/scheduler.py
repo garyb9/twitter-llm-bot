@@ -1,14 +1,15 @@
 from apscheduler.schedulers.background import BackgroundScheduler
-import twitter.twitter_jobs as twitter_jobs
+import scheduler.jobs as jobs
 
 # Create a scheduler instance
 scheduler = BackgroundScheduler(daemon=True)
 
 # Add CRON tasks
-scheduler.add_job(twitter_jobs.get_tweets_job, 'cron', hour=12,
+
+scheduler.add_job(jobs.post_text_tweet_job, 'interval',
+                  minutes=60)  # Runs every 60 minutes
+scheduler.add_job(jobs.post_image_tweet_job, 'cron', hour=12,
                   minute=0, second=0)  # Runs daily at 12:00 PM
-scheduler.add_job(twitter_jobs.post_tweet_job, 'interval',
-                  minutes=30)  # Runs every 30 minutes
 
 # # Define the times at which the task should run (midnight, 8 AM, 12 PM, 4 PM, 8 PM)
 # times_to_run = ['0 0', '0 8', '0 12', '0 16', '0 20']

@@ -1,5 +1,5 @@
 {
-    "python.formatting.provider": "autopep8",
+    "autopep8.args": ["--ignore", "E402"],
     "editor.formatOnSave": true,
     "python.analysis.extraPaths": [
         "./src"

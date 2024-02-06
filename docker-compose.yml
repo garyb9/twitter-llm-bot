@@ -1,0 +1,17 @@
+version: "3"
+
+services:
+  producer:
+    build: .
+    command: ["python", "./src/main.py"]
+    ports:
+      - "8080:8080"
+    depends_on:
+      - redis
+    environment:
+      - REDIS_HOST=redis
+
+  redis:
+    image: "redis:alpine"
+    ports:
+      - "6379:6379"

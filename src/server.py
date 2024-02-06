@@ -1,12 +1,12 @@
 import logging
 from uvicorn import Config, Server
 
-from redis_conn import create_redis_connection
+from db.redis_conn import create_redis_connection
 import os
 import logging
-from redis_conn import create_redis_connection
+from db.redis_conn import create_redis_connection
 from fastapi import FastAPI
-from redis_conn import create_redis_connection
+from db.redis_conn import create_redis_connection
 from uvicorn import Config, Server
 from contextlib import asynccontextmanager
 
