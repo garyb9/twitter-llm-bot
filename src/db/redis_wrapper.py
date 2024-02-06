@@ -28,20 +28,28 @@ class RedisClientWrapper:
             await self.client.connection_pool.disconnect()
             logging.info("Redis connection closed.")
 
-    async def fifo_push(self, name: str, message: str) -> None:
-        """Push a message onto a FIFO queue."""
+    def ensure_client_initialized(self):
+        """Ensure that the Redis client is initialized."""
         if not self.client:
             raise Exception(
                 "Redis client not initialized. Call 'connect' first.")
+
+    async def fifo_push(self, name: str, message: str) -> None:
+        """Push a message onto a FIFO queue."""
+        self.ensure_client_initialized()
         await self.client.lpush(name, message)
+
+    async def fifo_push_list(self, name: str, messages: list) -> None:
+        """Atomically push a list of messages onto a FIFO queue."""
+        self.ensure_client_initialized()
+        if messages:
+            await self.client.lpush(name, *messages)
 
     async def fifo_pop(self, name: str, timeout: int = 0) -> Optional[str]:
         """Pop a message from a FIFO queue."""
-        if not self.client:
-            raise Exception(
-                "Redis client not initialized. Call 'connect' first.")
+        self.ensure_client_initialized()
         result = await self.client.brpop(name, timeout)
-        return result[1].decode("utf-8") if result else None
+        return result.decode("utf-8") if result else None
 
 
 def start_redis():

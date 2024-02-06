@@ -3,9 +3,10 @@ import json
 import logging
 from llm import openai
 from utils import str_to_list_formatter
+from db.redis_wrapper import RedisClientWrapper
 
 
-async def generate_tweets():
+async def generate_tweets(redis_wrapper: RedisClientWrapper):
     # TODO: temporary until we have a better way to do this.
     philosopher = "Max Stirner"
 
@@ -30,7 +31,7 @@ async def generate_tweets():
     logging.info(
         f"Tweets generated:\n{json.dumps(generated_response, indent=4)}"
     )
-    return generated_response
+    await redis_wrapper.fifo_push_list('tweets', messages)
 
 
 async def post_text_tweet_job():
