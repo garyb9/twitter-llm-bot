@@ -4,7 +4,7 @@ import scheduler.jobs as jobs
 from apscheduler.schedulers.asyncio import AsyncIOScheduler
 from apscheduler.jobstores.base import JobLookupError
 
-DAILY_NUMBER_OF_TEXT_TWEETS = 12
+DAILY_NUMBER_OF_TEXT_TWEETS = 10
 DAILY_NUMBER_OF_IMAGE_TWEETS = 2
 
 

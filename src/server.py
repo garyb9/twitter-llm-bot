@@ -1,15 +1,9 @@
-import logging
-from uvicorn import Config, Server
-
-from db.redis_conn import create_redis_connection
 import os
 import logging
-from db.redis_conn import create_redis_connection
 from fastapi import FastAPI
-from db.redis_conn import create_redis_connection
 from uvicorn import Config, Server
 from contextlib import asynccontextmanager
-
+from db.redis_wrapper import RedisClientWrapper
 from scheduler.scheduler import create_scheduler
 
 
@@ -30,15 +24,17 @@ async def lifespan(app: FastAPI) -> None:
     # Startup
     logging.info("Initializing resources")
 
-    app.state.redis_client = await create_redis_connection(
+    redis_client = RedisClientWrapper()
+    await redis_client.connect(
         host=os.getenv("REDIS_HOST", "localhost"),
         port=int(os.getenv("REDIS_PORT", 6379)),
         db=int(os.getenv("REDIS_DB", 0)),
     )
+    app.state.redis_client = redis_client
 
     yield
     # Shutdown
-    await app.state.redis_client.aclose()
+    await app.state.redis_client.disconnect()
     logging.info("Resources have been cleaned up")
 
 
