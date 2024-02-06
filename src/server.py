@@ -10,6 +10,8 @@ from db.redis_conn import create_redis_connection
 from uvicorn import Config, Server
 from contextlib import asynccontextmanager
 
+from scheduler.scheduler import create_scheduler
+
 
 async def run_server() -> None:
     logging.info(f'Application started')
@@ -41,3 +43,22 @@ async def lifespan(app: FastAPI) -> None:
 
 
 app = FastAPI(lifespan=lifespan)
+scheduler = create_scheduler()
+
+
+@app.get("/start-scheduler")
+async def start_scheduler():
+    if scheduler and not scheduler.running:
+        scheduler.start()
+        return {"message": "Scheduler started and jobs scheduled."}
+    else:
+        return {"message": "Scheduler is already running."}
+
+
+@app.get("/stop-scheduler")
+async def stop_scheduler():
+    if scheduler and scheduler.running:
+        scheduler.shutdown()
+        return {"message": "Scheduler stopped."}
+    else:
+        return {"message": "Scheduler is not running."}

@@ -1,23 +1,48 @@
-from apscheduler.schedulers.background import BackgroundScheduler
+import random
 import scheduler.jobs as jobs
+from apscheduler.schedulers.asyncio import AsyncIOScheduler
+from apscheduler.jobstores.base import JobLookupError
 
-# Create a scheduler instance
-scheduler = BackgroundScheduler(daemon=True)
+DAILY_NUMBER_OF_TEXT_TWEETS = 12
+DAILY_NUMBER_OF_IMAGE_TWEETS = 2
 
-# Add CRON tasks
 
-scheduler.add_job(jobs.post_text_tweet_job, 'interval',
-                  minutes=60)  # Runs every 60 minutes
-scheduler.add_job(jobs.post_image_tweet_job, 'cron', hour=12,
-                  minute=0, second=0)  # Runs daily at 12:00 PM
+def create_scheduler(start: bool = True):
+    scheduler = AsyncIOScheduler()
+    # separating the periodic reshuffle to be added only once
+    scheduler.add_job(
+        periodic_scheduler_job_time_reshuffle,
+        'cron',
+        hour=0,
+        minute=0,
+        id=f"periodic_scheduler_job_time_reshuffle"
+    )
+    # add other jobs to the scheduler
+    add_jobs_to_scheduler(scheduler)
+    if start:
+        scheduler.start()
+    return scheduler
 
-# # Define the times at which the task should run (midnight, 8 AM, 12 PM, 4 PM, 8 PM)
-# times_to_run = ['0 0', '0 8', '0 12', '0 16', '0 20']
 
-# # Add jobs for each specific time
-# for time in times_to_run:
-#     hour, minute = time.split()
-#     scheduler.add_job(twitter_jobs.create_tweet_job, 'cron', hour=hour, minute=minute)
+def add_jobs_to_scheduler(scheduler: AsyncIOScheduler):
+    for i in range(DAILY_NUMBER_OF_TEXT_TWEETS):
+        hour = random.randint(0, 23)
+        minute = random.randint(0, 59)
+        scheduler.add_job(jobs.post_text_tweet_job, 'cron', hour=hour,
+                          minute=minute, id=f"post_text_tweet_job_{i}")
+    for i in range(DAILY_NUMBER_OF_IMAGE_TWEETS):
+        hour = random.randint(0, 23)
+        minute = random.randint(0, 59)
+        scheduler.add_job(jobs.post_image_tweet_job, 'cron', hour=hour,
+                          minute=minute, id=f"post_image_tweet_job_{i}")
 
-# Debug
-# scheduler.add_job(lambda: print("Sample task executed!"), 'interval', seconds=10) # Runs every 10 seconds
+
+async def periodic_scheduler_job_time_reshuffle(scheduler: AsyncIOScheduler):
+    # Clear existing jobs to avoid duplication
+    for job in scheduler.get_jobs():
+        try:
+            if not job.id.startswith("periodic"):
+                scheduler.remove_job(job.id)
+        except JobLookupError:
+            pass  # Job was already removed or does not exist
+    add_jobs_to_scheduler(scheduler)
