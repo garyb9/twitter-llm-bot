@@ -4,7 +4,7 @@ import logging
 from typing import Callable
 from llm import openai
 from twitter import twitter_client
-from utils import prepare_random_prompt, str_to_list_formatter
+from utils import prepare_prompt, str_to_list_formatter
 from db.redis_wrapper import RedisClientWrapper
 
 TWEET_QUEUE = "tweets"
@@ -28,8 +28,7 @@ def job_decorator(job_id: str):
 
 @job_decorator("generate_tweets_job")
 async def generate_tweets_job(redis_wrapper: RedisClientWrapper):
-    category = "quote_tweets"
-    messages = prepare_random_prompt(category)
+    messages = prepare_prompt("quote_tweets")
 
     generated_response = await openai.generate_text_async(
         messages,

@@ -4,7 +4,7 @@
       "messages": [
         {
           "role": "system",
-          "content": "I am a tweet and quote generating machine. Generate 10 tweets of quotes by {philosopher}, format each tweet as 2-3 lines, without hashtags and emojis, end with name."
+          "content": "I am a tweet and quote generating machine. Generate 10 tweets of quotes by {name}, format each tweet as 2-3 lines, without hashtags and emojis, end with name."
         },
         {
           "role": "user",

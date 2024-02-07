@@ -1,3 +1,4 @@
+import logging
 import os
 import re
 import json
@@ -14,16 +15,40 @@ with open(prompts_config_path, 'r') as file:
 # Function to prepare a random prompt
 
 
-def prepare_random_prompt(category: str = None):
-    if not category:
-        category = random.choice(list(prompts_config.keys()))
-    prompt = random.choice(prompts_config[category])
-    messages = prompt['messages']
-    input_var = {var: random.choice(
-        values) for var, values in prompt['input_variables'].items()}
-    for item in messages:
-        item['content'] = item['content'].format(**input_var)
-    return messages
+def prepare_prompt(category: str = None, chosen_var: str = None) -> List[str]:
+    """
+    Prepares and formats a prompt based on the given category and variable.
+
+    Args:
+        category (str, optional): The category of prompts to choose from. If None, a random category is selected.
+        chosen_var (str, optional): A specific variable to use in the prompt. If None, a random variable is chosen.
+
+    Returns:
+        list: A list of formatted messages for the prompt.
+
+    Raises:
+        Exception: If an error occurs during the prompt preparation.
+    """
+    try:
+        if not category:
+            category = random.choice(list(prompts_config.keys()))
+
+        prompt_config = random.choice(prompts_config[category])
+        messages = prompt_config['messages']
+
+        input_variables = {
+            var_name: (random.choice(values) if not chosen_var else chosen_var)
+            for var_name, values in prompt_config['input_variables'].items()
+        }
+
+        for message in messages:
+            message['content'] = message['content'].format(**input_variables)
+
+        return messages
+    except Exception as e:
+        logging.error(
+            f"An unexpected error occurred during prompt preparation: {e}")
+        raise
 
 
 def str_to_list_formatter(text: str) -> List[str]:
