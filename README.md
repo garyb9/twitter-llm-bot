@@ -11,10 +11,13 @@ Before you start exploring and experimenting with the Transformer architecture, 
 Before you begin, ensure you have the following prerequisites:
 
 - Python 3.11 or higher
+- Redis
 - A Twitter Developer Account (for API keys and tokens)
 - Open AI API keys
 
 ## Installation
+
+### Project
 Clone this repository to your local machine:
 
 ```bash
@@ -33,6 +36,10 @@ source venv/bin/activate  # On Windows, use 'venv\Scripts\activate'
 # Install project dependencies
 pip install -r requirements.txt
 ```
+### Redis
+Follow this page for downloading & installation steps:
+[Redis](https://redis.io/docs/install/install-redis/)
+
 
 ## Configuration
 Before you can use the Twitter bot, you need to set up the necessary configuration. Create a .env file in the project root directory with the following content:
@@ -57,12 +64,55 @@ OPENAI_API_KEY = your_api_key
 Please refer to [Hugging Face cache setup](https://huggingface.co/docs/transformers/installation#cache-setup) guide for more information.
 
 ## Usage
-To run the Twitter bot, execute the following command:
+
+Connect to Redis
+You can test that your Redis server is running by connecting with the Redis CLI:
 
 ```bash
-python ./src/app.py
+redis-server 
+localhost:6379> ping
+PONG
 ```
+
+To run the Twitter bot, execute the following command:
+```bash
+python ./src/main.py
+```
+
+Test project using:
+```bash
+pytest
+or
+python -m pytest
+```
+
+## Docker Setup
+
+To simplify the setup and ensure a consistent environment for development and production, this project supports Docker. Follow the steps below to get the Twitter bot running inside a Docker container using Docker Compose.
+
+### Docker Prerequisites
+- Docker installed on your machine. Installation guides for Docker can be found at [Docker's official website](https://docs.docker.com/get-docker/).
+- Docker Compose installed on your machine (for Docker Desktop users, it's included). Check the installation guide at [Docker Compose's official website](https://docs.docker.com/compose/install/).
+
+### Building the Docker Image
+
+To build the Docker image for the Twitter bot, run the following command in the project root directory:
+
+```bash
+docker-compose build
+```
+
+### Running the Bot with Docker Compose
 The bot will start generating and posting tweets based on the prompts you specify in the code. You can customize the bot's behavior by modifying the prompts.
+```bash
+docker-compose up
+```
+
+### Stopping the Bot
+To stop the Twitter bot and any related services running via Docker Compose, run:
+```bash
+docker-compose down
+```
 
 ## Contributing
 If you want to contribute to this project, please follow these steps:
