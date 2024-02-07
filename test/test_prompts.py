@@ -17,6 +17,7 @@ def test_prepare_prompt_structure():
 
 
 @pytest.mark.asyncio
+@pytest.mark.skip(reason="Enable when direct prompting is required for testing")
 async def test_generate_text():
     category = 'quote_tweets'
     chosen_var = "Max Stirner"
