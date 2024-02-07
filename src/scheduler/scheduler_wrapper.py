@@ -1,3 +1,4 @@
+import json
 import logging
 import random
 import scheduler.jobs as jobs
@@ -40,12 +41,18 @@ class SchedulerWrapper:
         interval = 24 // num_runs
         return [f"{i * interval:02d}:00" for i in range(num_runs)]
 
+    def calculate_run_times_random(self, num_runs: int) -> list:
+        return [
+            f"{random.randint(0, 23):02d}:{random.randint(0, 59)}"
+            for i in range(num_runs)
+        ]
+
     def add_jobs_to_scheduler(self):
         # Add tweet generation jobs
         times_to_run = self.calculate_run_times(
             DAILY_NUMBER_OF_TWEET_GENERATIONS)
+        job_id = "generate_tweets_job"
         for i, time in enumerate(times_to_run):
-            job_id = f"generate_tweets_job_{i+1}"
             hour, minute = map(int, time.split(':'))
 
             self.scheduler.add_job(
@@ -53,29 +60,31 @@ class SchedulerWrapper:
                 trigger='cron',
                 hour=hour,
                 minute=minute,
-                id=job_id,
+                id=f"{job_id}_{i+1}",
                 args=[self.redis_wrapper]
             )
 
-            logging.info(
-                f"`{job_id}` will run today at: {hour:02d}:{minute:02d}")
+        logging.info(
+            f"{job_id} will run at: \n{json.dumps(times_to_run)}")
 
         # Add text tweet posting jobs
-        for i in range(DAILY_NUMBER_OF_TEXT_TWEETS):
-            job_id = f"post_text_tweet_job_{i+1}"
-            hour, minute = random.randint(0, 23), random.randint(0, 59)
+        job_id = "post_text_tweet_job"
+        times_to_run = self.calculate_run_times_random(
+            DAILY_NUMBER_OF_TEXT_TWEETS)
+        for i, time in enumerate(times_to_run):
+            hour, minute = map(int, time.split(':'))
 
             self.scheduler.add_job(
                 jobs.post_text_tweet_job,
                 trigger='cron',
                 hour=hour,
                 minute=minute,
-                id=job_id,
+                id=f"{job_id}_{i+1}",
                 args=[self.redis_wrapper]
             )
 
-            logging.info(
-                f"`{job_id}` will run today at: {hour:02d}:{minute:02d}")
+        logging.info(
+            f"{job_id} will run at: \n{json.dumps(times_to_run)}")
 
         # # Add image tweet posting jobs
         # for i in range(DAILY_NUMBER_OF_IMAGE_TWEETS):
