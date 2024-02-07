@@ -44,58 +44,40 @@ class SchedulerWrapper:
     def calculate_run_times_random(self, num_runs: int) -> list:
         return [
             f"{random.randint(0, 23):02d}:{random.randint(0, 59)}"
-            for i in range(num_runs)
+            for _ in range(num_runs)
         ]
 
-    def add_jobs_to_scheduler(self):
+    def add_jobs_to_scheduler(self) -> None:
         # Add tweet generation jobs
         times_to_run = self.calculate_run_times(
             DAILY_NUMBER_OF_TWEET_GENERATIONS)
-        job_id = "generate_tweets_job"
-        for i, time in enumerate(times_to_run):
-            hour, minute = map(int, time.split(':'))
-
-            self.scheduler.add_job(
-                jobs.generate_tweets_job,
-                trigger='cron',
-                hour=hour,
-                minute=minute,
-                id=f"{job_id}_{i+1}",
-                args=[self.redis_wrapper]
-            )
-
-        logging.info(
-            f"{job_id} will run at: \n{json.dumps(times_to_run)}")
+        self.add_jobs(jobs.generate_tweets_job,
+                      "generate_tweets_job", times_to_run)
 
         # Add text tweet posting jobs
-        job_id = "post_text_tweet_job"
         times_to_run = self.calculate_run_times_random(
             DAILY_NUMBER_OF_TEXT_TWEETS)
+        self.add_jobs(jobs.post_text_tweet_job,
+                      "post_text_tweet_job", times_to_run)
+
+    def add_jobs(self, job_function, job_id_base, times_to_run) -> None:
         for i, time in enumerate(times_to_run):
             hour, minute = map(int, time.split(':'))
+            job_id = f"{job_id_base}_{i+1}"
 
             self.scheduler.add_job(
-                jobs.post_text_tweet_job,
+                job_function,
                 trigger='cron',
                 hour=hour,
                 minute=minute,
-                id=f"{job_id}_{i+1}",
+                id=job_id,
                 args=[self.redis_wrapper]
             )
 
         logging.info(
-            f"{job_id} will run at: \n{json.dumps(times_to_run)}")
+            f"{job_id_base} will run at: \n{json.dumps(times_to_run, indent=2)}")
 
-        # # Add image tweet posting jobs
-        # for i in range(DAILY_NUMBER_OF_IMAGE_TWEETS):
-        #     hour, minute = random.randint(0, 23), random.randint(0, 59)
-        #     job_id = f"post_image_tweet_job_{i+1}"
-        #     self.scheduler.add_job(
-        #         jobs.post_image_tweet_job, 'cron', hour=hour, minute=minute, id=job_id)
-        #     logging.info(
-        #         f"`{job_id}` will run today at {hour:02d}:{minute:02d}")
-
-    async def periodic_scheduler_job_time_reshuffle(self):
+    async def periodic_scheduler_job_time_reshuffle(self) -> None:
         for job in self.scheduler.get_jobs():
             try:
                 if not job.id.startswith("periodic"):
