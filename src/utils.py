@@ -18,14 +18,12 @@ def prepare_random_prompt(category: str = None):
     if not category:
         category = random.choice(list(prompts_config.keys()))
     prompt = random.choice(prompts_config[category])
-    message_template = random.choice(prompt['messages'])
+    messages = prompt['messages']
     input_var = {var: random.choice(
         values) for var, values in prompt['input_variables'].items()}
-    message_content = message_template['content'].format(**input_var)
-    return {
-        "role": message_template['role'],
-        "content": message_content
-    }
+    for item in messages:
+        item['content'] = item['content'].format(**input_var)
+    return messages
 
 
 def str_to_list_formatter(text: str) -> List[str]:
