@@ -1,7 +1,0 @@
-{
-    "models": {
-        "text2text-generation": [
-            "https://huggingface.co/google/flan-t5-large"
-        ]
-    }
-}
