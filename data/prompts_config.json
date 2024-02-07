@@ -1,0 +1,36 @@
+{
+  "quote_tweets": [
+    {
+      "messages": [
+        {
+          "role": "system",
+          "content": "I am a tweet and quote generating machine. Generate 10 tweets of quotes by {philosopher}, format each tweet as 2-3 lines, without hashtags and emojis, end with name."
+        },
+        {
+          "role": "user",
+          "content": "Generate tweets inspired by the philosopher {name}."
+        }
+      ],
+      "input_variables": {
+        "name": ["Max Stirner", "Friedrich Nietzsche"]
+      }
+    }
+  ],
+  "philosophical_tweets": [
+    {
+      "messages": [
+        {
+          "role": "system",
+          "content": "Generate 10 tweets about {topic} with a philosophical sense, format each tweet as 2-3 lines, without hashtags and emojis."
+        },
+        {
+          "role": "user",
+          "content": "Let's explore the depth of {topic} through philosophical tweets."
+        }
+      ],
+      "input_variables": {
+        "topic": ["masculinity", "power", "strength", "greatness", "existence", "consciousness", "freedom"]
+      }
+    }
+  ]
+}

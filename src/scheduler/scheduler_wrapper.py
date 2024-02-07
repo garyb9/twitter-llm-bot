@@ -43,7 +43,7 @@ class SchedulerWrapper:
 
     def calculate_run_times_random(self, num_runs: int) -> list:
         return [
-            f"{random.randint(0, 23):02d}:{random.randint(0, 59)}"
+            f"{random.randint(0, 23):02d}:{random.randint(0, 59):02d}"
             for _ in range(num_runs)
         ]
 
@@ -57,6 +57,7 @@ class SchedulerWrapper:
         # Add text tweet posting jobs
         times_to_run = self.calculate_run_times_random(
             DAILY_NUMBER_OF_TEXT_TWEETS)
+        times_to_run.sort()
         self.add_jobs(jobs.post_text_tweet_job,
                       "post_text_tweet_job", times_to_run)
 
