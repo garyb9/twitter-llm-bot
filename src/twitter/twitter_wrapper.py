@@ -1,49 +1,61 @@
 import os
-import tweepy
-from tweepy import asynchronous
-
-twitter_client = tweepy.Client(
-    consumer_key=os.getenv('TWITTER_API_KEY'),
-    consumer_secret=os.getenv('TWITTER_API_KEY_SECRET'),
-    access_token=os.getenv('TWITTER_ACCESS_TOKEN'),
-    access_token_secret=os.getenv('TWITTER_ACCESS_TOKEN_SECRET')
-)
+from tweepy import asynchronous, API, OAuthHandler
 
 
 class TwitterAsyncWrapper:
     def __init__(self):
-        self.client = asynchronous.AsyncClient(
+        """
+        Initialize the Twitter wrapper with both synchronous and asynchronous clients.
+
+        The synchronous client (self.client) is used for operations not supported in Twitter API v2, 
+        like media uploads. The asynchronous client (self.async_client) is used for operations 
+        available in Twitter API v2, like posting tweets.
+        """
+
+        # Twitter API v1.1 (synchronous) for media upload
+        self.client = API(
+            auth=OAuthHandler(
+                consumer_key=os.getenv('TWITTER_API_KEY'),
+                consumer_secret=os.getenv('TWITTER_API_KEY_SECRET'),
+                access_token=os.getenv('TWITTER_ACCESS_TOKEN'),
+                access_token_secret=os.getenv('TWITTER_ACCESS_TOKEN_SECRET')
+            )
+        )
+
+        # Twitter API v2 (asynchronous) for tweeting
+        self.async_client = asynchronous.AsyncClient(
             consumer_key=os.getenv('TWITTER_API_KEY'),
             consumer_secret=os.getenv('TWITTER_API_KEY_SECRET'),
             access_token=os.getenv('TWITTER_ACCESS_TOKEN'),
             access_token_secret=os.getenv('TWITTER_ACCESS_TOKEN_SECRET')
         )
 
-    async def post_text_tweet(self, text: str):
+    async def post_text_tweet(self, text: str) -> any:
         """
-        Posts a text tweet.
+        Asynchronously posts a text tweet.
 
         Parameters:
-        - text (str): The text of the tweet.
+        - text (str): The text of the tweet to post.
 
         Returns:
-        - The response from Twitter API after posting the tweet.
+        - response: The response from the Twitter API after posting the tweet.
         """
-        response = await self.client.create_tweet(text=text)
+        response = await self.async_client.create_tweet(text=text)
         return response
 
-    async def post_image_tweet(self, image_path: str, text: str = ""):
+    async def post_image_tweet(self, image_path: str, text: str = "") -> any:
         """
-        Posts a tweet with an image.
+        Posts a tweet with an image. This method combines synchronous media upload
+        with asynchronous tweet posting due to current API limitations.
 
         Parameters:
         - image_path (str): The file path of the image to upload.
-        - status_text (str, optional): The text of the tweet, if any.
+        - text (str, optional): The text of the tweet, if any.
 
         Returns:
-        - The response from Twitter API after posting the tweet.
+        - response: The response from the Twitter API after posting the tweet.
         """
         media = self.client.media_upload(filename=image_path)
-        response = self.client.create_tweet(
-            status=text, media_ids=[media.media_id])
+        response = await self.async_client.create_tweet(
+            text=text, media_ids=[media.media_id])
         return response
