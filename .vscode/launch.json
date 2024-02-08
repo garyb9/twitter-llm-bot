@@ -25,5 +25,13 @@
             "console": "integratedTerminal",
             "cwd": "${workspaceFolder}"
         },
+        {
+            "name": "Python: Example text on image",
+            "type": "debugpy",
+            "request": "launch",
+            "program": "${workspaceFolder}/scripts/add_text_to_image.py",
+            "console": "integratedTerminal",
+            "cwd": "${workspaceFolder}"
+        },
     ]
 }
