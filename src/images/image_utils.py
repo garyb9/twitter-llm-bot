@@ -13,7 +13,9 @@ def add_text_to_image(
     font_path='arial.ttf',
     color="white",
     relative_font_size=0.05,
-    vertical_position=0.15
+    vertical_position=0.15,
+    outline_color="black",
+    outline_width=1
 ):
     """
     Add text to an image with specified font and color.
@@ -35,14 +37,11 @@ def add_text_to_image(
     # Calculate font size relative to the image width
     font_size = int(image_width * relative_font_size)
 
-    # Define the rectangle area for text: top 40% of the image
-    rect_height = int(image_height * 0.4)
-    padding = 20  # Padding inside the rectangle for text
-
     # Load or set the default font
     font = ImageFont.truetype(font_path, font_size)
 
     # Define the maximum width for the text
+    padding = 20  # Padding inside the rectangle for text
     max_width = image_width - 2 * padding
 
     # Estimate the average character width at this font size and calculate wrap width
@@ -54,10 +53,12 @@ def add_text_to_image(
     # Wrap the text to fit into the rectangle
     wrapped_text = textwrap.fill(text, width=wrap_width)
 
-    # Calculate the starting y position to ensure text is within the top 30%
+    # Split the wrapped text into lines to calculate the total text height
     lines = wrapped_text.split('\n')
     text_height = sum([font.getsize(line)[1]
                       for line in lines]) + padding * (len(lines) - 1)
+
+    # Calculate the starting y position based on the vertical_position parameter
     y_position = image_height * vertical_position - text_height / 2
 
     # Draw the wrapped text
@@ -65,12 +66,26 @@ def add_text_to_image(
         # Calculate horizontal position to center the text
         text_width, line_height = draw.textsize(line, font=font)
         x_position = (image_width - text_width) / 2
-        draw.text((x_position, y_position), line, font=font, fill=color)
+        # draw.text((x_position, y_position), line, font=font, fill=color)
+        draw_text_with_outline(
+            draw, line, (x_position, y_position), font, color, outline_color, outline_width)
+
         # Move to the next line, adding padding between lines
         y_position += line_height + padding
 
     # Save the modified image
     image.save(save_path)
+
+
+def draw_text_with_outline(draw, text, position, font, text_color, outline_color, outline_width):
+    x, y = position
+    # Draw outline in all directions
+    for i in range(-outline_width, outline_width + 1):
+        for j in range(-outline_width, outline_width + 1):
+            if i != 0 or j != 0:  # to avoid drawing the text color in the outline loop
+                draw.text((x + i, y + j), text, font=font, fill=outline_color)
+    # Draw the main text
+    draw.text(position, text, font=font, fill=text_color)
 
 
 def add_text_to_image_cv2(image_path, save_path, text):

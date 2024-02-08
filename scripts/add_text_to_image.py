@@ -19,10 +19,13 @@ async def main() -> None:
 "Obstacles show us the gap between where we are and where we want to be" - Anonymous.
     """
     save_path = image_path.replace('pic_4', 'pic_5')
+    font_path = os.path.abspath(
+        os.path.join(os.path.dirname(__file__), '..', 'data', 'gautamib.ttf'))
     add_text_to_image(
         image_path=image_path,
         save_path=save_path,
         text=text,
+        font_path=font_path
     )
     modified_image = Image.open(save_path)
     modified_image.show()
