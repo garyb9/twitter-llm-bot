@@ -1,13 +1,13 @@
-import logging
 import os
 import re
 import json
 import random
+import logging
 from typing import List
 
 # Load prompts configuration
 prompts_config_path = os.path.abspath(os.path.join(
-    os.path.dirname(__file__), '../data/prompts_config.json'))
+    os.path.dirname(__file__), '../../data/prompts_config.json'))
 
 with open(prompts_config_path, 'r') as file:
     prompts_config = json.load(file)

@@ -1,6 +1,6 @@
 import pytest
 from src.llm.openai import generate_text_async
-from utils import str_to_list_formatter, prepare_prompt
+from llm.prompts import str_to_list_formatter, prepare_prompt
 
 
 def test_prepare_prompt_structure():

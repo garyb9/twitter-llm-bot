@@ -10,7 +10,7 @@ sys.path.append(
 import setup_env
 from typing import List
 import llm.openai as openai
-from utils import str_to_list_formatter
+from llm.prompts import str_to_list_formatter
 
 
 async def tweet_generation(philosopher: str = 'Max Stirner') -> List[str]:

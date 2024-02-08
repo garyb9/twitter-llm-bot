@@ -22,7 +22,7 @@ models = ["gpt-4-turbo-preview", "gpt-3.5-turbo", "dall-e-3"]
 
 
 async def generate_text_async(
-    prompt: Union[str, List[str]],
+    prompt_messages: Union[str, List[str]],
     model=models[1],
     temperature=0.7,
     max_tokens=100,
@@ -38,7 +38,7 @@ async def generate_text_async(
         max_tokens (int): The maximum number of tokens to generate.
     """
     chat_completion = await client.chat.completions.create(
-        messages=prompt,
+        messages=prompt_messages,
         model=model,
         temperature=temperature,
         max_tokens=max_tokens,
@@ -49,7 +49,7 @@ async def generate_text_async(
 
 
 async def generate_image_async(
-    prompt:str,
+    prompt: str,
     n=1,
     model=models[2],
 ):
@@ -68,10 +68,10 @@ async def generate_image_async(
         n=n,
         response_format='b64_json'
     )
-    
+
     # raw_images = response.data
     # b64_json = raw_images[0].b64_json
     images = [
         Image.open(BytesIO(decodebytes(bytes(b64_img.b64_json, "utf-8")))) for b64_img in response.data
-    ]    
+    ]
     return images
