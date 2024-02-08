@@ -6,7 +6,27 @@ import textwrap
 # Image.MAX_IMAGE_PIXELS = None
 
 
-def add_text_to_image(image_path, save_path, text, font_path='arial.ttf', color="white", relative_font_size=0.05):
+def add_text_to_image(
+    image_path,
+    save_path,
+    text,
+    font_path='arial.ttf',
+    color="white",
+    relative_font_size=0.05,
+    vertical_position=0.15
+):
+    """
+    Add text to an image with specified font and color.
+
+    Args:
+    - image_path: Path to the input image.
+    - save_path: Path where the modified image will be saved.
+    - text: Text to add to the image.
+    - font_path: Path to the .ttf font file to use.
+    - color: Color of the text.
+    - relative_font_size: Font size relative to the image width.
+    - vertical_position: Vertical position of the text as a fraction of image height (0.5 for middle).
+    """
     # Load the image
     image = Image.open(image_path)
     draw = ImageDraw.Draw(image)
@@ -15,8 +35,8 @@ def add_text_to_image(image_path, save_path, text, font_path='arial.ttf', color=
     # Calculate font size relative to the image width
     font_size = int(image_width * relative_font_size)
 
-    # Define the rectangle area for text: top 30% of the image
-    rect_height = int(image_height * 0.3)
+    # Define the rectangle area for text: top 40% of the image
+    rect_height = int(image_height * 0.4)
     padding = 20  # Padding inside the rectangle for text
 
     # Load or set the default font
@@ -38,8 +58,7 @@ def add_text_to_image(image_path, save_path, text, font_path='arial.ttf', color=
     lines = wrapped_text.split('\n')
     text_height = sum([font.getsize(line)[1]
                       for line in lines]) + padding * (len(lines) - 1)
-    y_position = padding if rect_height > text_height else (
-        rect_height - text_height) / 2
+    y_position = image_height * vertical_position - text_height / 2
 
     # Draw the wrapped text
     for line in lines:
