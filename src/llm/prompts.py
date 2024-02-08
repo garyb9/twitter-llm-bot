@@ -37,13 +37,16 @@ def prepare_prompt_for_text_model(category: str = None, chosen_var: str = None) 
         prompt_config = random.choice(prompts_config_chat[category])
         messages = prompt_config['messages']
 
+        # if 'input_variables' in prompt_config:
         input_variables = {
-            var_name: (random.choice(values) if not chosen_var else chosen_var)
+            var_name: (random.choice(values)
+                       if not chosen_var else chosen_var)
             for var_name, values in prompt_config['input_variables'].items()
         }
 
         for message in messages:
-            message['content'] = message['content'].format(**input_variables)
+            message['content'] = message['content'].format(
+                **input_variables)
 
         return messages
     except Exception as e:
@@ -67,18 +70,19 @@ def prepare_prompt_for_image_model(chosen_var: str = None) -> List[str]:
         Exception: If an error occurs during the prompt preparation.
     """
     try:
-        prompts_config_image = random.choice(prompts_config_chat)
-        messages = prompts_config_image['messages']
+        prompt_config = random.choice(prompts_config_image)
+        message = prompt_config['message']
 
-        input_variables = {
-            var_name: (random.choice(values) if not chosen_var else chosen_var)
-            for var_name, values in prompts_config_image['input_variables'].items()
-        }
+        if 'input_variables' in prompt_config:
+            input_variables = {
+                var_name: (random.choice(values)
+                           if not chosen_var else chosen_var)
+                for var_name, values in prompt_config['input_variables'].items()
+            }
 
-        for message in messages:
-            message['content'] = message['content'].format(**input_variables)
+            message = message.format(**input_variables)
 
-        return messages
+        return message
     except Exception as e:
         logging.error(
             f"An unexpected error occurred during prompt preparation for image: {e}")

@@ -18,7 +18,7 @@
             "cwd": "${workspaceFolder}"
         },
         {
-            "name": "Python: Example",
+            "name": "Python: Twitter image post",
             "type": "debugpy",
             "request": "launch",
             "program": "${workspaceFolder}/scripts/twitter_image_post.py",
@@ -26,10 +26,18 @@
             "cwd": "${workspaceFolder}"
         },
         {
-            "name": "Python: Example text on image",
+            "name": "Python: Add text to image",
             "type": "debugpy",
             "request": "launch",
             "program": "${workspaceFolder}/scripts/add_text_to_image.py",
+            "console": "integratedTerminal",
+            "cwd": "${workspaceFolder}"
+        },
+        {
+            "name": "Python: Add text to generated image",
+            "type": "debugpy",
+            "request": "launch",
+            "program": "${workspaceFolder}/scripts/add_text_to_generated_image.py",
             "console": "integratedTerminal",
             "cwd": "${workspaceFolder}"
         },
