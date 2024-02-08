@@ -3,7 +3,7 @@ import json
 import logging
 from typing import Callable
 from llm import openai
-from twitter import twitter_client
+from twitter import twitter_wrapper
 from llm.prompts import prepare_prompt, str_to_list_formatter
 from db.redis_wrapper import RedisClientWrapper
 
@@ -48,7 +48,7 @@ async def generate_tweets_job(redis_wrapper: RedisClientWrapper):
 async def post_text_tweet_job(redis_wrapper: RedisClientWrapper):
     tweet_text = await redis_wrapper.fifo_pop(TWEET_QUEUE)
     if tweet_text:
-        status = twitter_client.create_tweet(
+        status = twitter_wrapper.create_tweet(
             text=tweet_text)
         logging.info(f"Posted tweet: {status.id}")
 
@@ -57,7 +57,7 @@ async def post_text_tweet_job(redis_wrapper: RedisClientWrapper):
 async def post_image_tweet_job(redis_wrapper: RedisClientWrapper):
     image_path = await redis_wrapper.fifo_pop(IMAGE_QUEUE)
     if image_path:
-        media = twitter_client.media_upload(image_path)
-        status = twitter_client.update_status(
+        media = twitter_wrapper.media_upload(image_path)
+        status = twitter_wrapper.update_status(
             status="", media_ids=[media.media_id])
         logging.info(f"Posted tweet with image: {status.id}")
