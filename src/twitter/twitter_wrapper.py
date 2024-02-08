@@ -10,7 +10,7 @@ twitter_client = tweepy.Client(
 )
 
 
-class TwitterWrapper:
+class TwitterAsyncWrapper:
     def __init__(self):
         self.client = asynchronous.AsyncClient(
             consumer_key=os.getenv('TWITTER_API_KEY'),
@@ -29,7 +29,7 @@ class TwitterWrapper:
         Returns:
         - The response from Twitter API after posting the tweet.
         """
-        response = self.client.create_tweet(text=text)
+        response = await self.client.create_tweet(text=text)
         return response
 
     async def post_image_tweet(self, image_path: str, status_text: str = ""):

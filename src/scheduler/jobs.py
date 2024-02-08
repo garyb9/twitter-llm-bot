@@ -3,12 +3,13 @@ import json
 import logging
 from typing import Callable
 from llm import openai
-from twitter import twitter_wrapper
+from twitter.twitter_wrapper import TwitterAsyncWrapper
 from llm.prompts import prepare_prompt, str_to_list_formatter
 from db.redis_wrapper import RedisClientWrapper
 
 TWEET_QUEUE = "tweets"
 IMAGE_QUEUE = "images"
+twitter_wrapper = TwitterAsyncWrapper()
 
 
 def job_decorator(job_id: str):
@@ -48,16 +49,14 @@ async def generate_tweets_job(redis_wrapper: RedisClientWrapper):
 async def post_text_tweet_job(redis_wrapper: RedisClientWrapper):
     tweet_text = await redis_wrapper.fifo_pop(TWEET_QUEUE)
     if tweet_text:
-        status = twitter_wrapper.create_tweet(
+        response = await twitter_wrapper.post_text_tweet(
             text=tweet_text)
-        logging.info(f"Posted tweet: {status.id}")
+        logging.info(f"Posted tweet response: {response}")
 
 
 @job_decorator("post_image_tweet_job")
 async def post_image_tweet_job(redis_wrapper: RedisClientWrapper):
     image_path = await redis_wrapper.fifo_pop(IMAGE_QUEUE)
     if image_path:
-        media = twitter_wrapper.media_upload(image_path)
-        status = twitter_wrapper.update_status(
-            status="", media_ids=[media.media_id])
-        logging.info(f"Posted tweet with image: {status.id}")
+        response = twitter_wrapper.post_image_tweet(image_path)
+        logging.info(f"Posted tweet with image response: {response}")

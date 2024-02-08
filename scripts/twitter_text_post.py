@@ -7,13 +7,18 @@ sys.path.append(
     os.path.abspath(os.path.join(os.path.dirname(__file__), '..', 'src'))
 )
 import setup_env
-from twitter.twitter_wrapper import TwitterWrapper
+from twitter.twitter_wrapper import TwitterAsyncWrapper
 
 
 async def main() -> None:
-    tw = TwitterWrapper()
-    # await tw.post_text_tweet(
-    #     f"Hello! I'm <NAME> and I'm here to help you with your {os.getenv('PHILOSOPHER_NAME')}.")
+    tw = TwitterAsyncWrapper()
+    tweet_text = """
+Adversity is a blessing in disguise.
+
+Use it to your advantage.
+    """
+    response = await tw.post_text_tweet(tweet_text)
+    logging.info(response)
 
 # Run
 if __name__ == "__main__":
