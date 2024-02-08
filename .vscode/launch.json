@@ -21,7 +21,7 @@
             "name": "Python: Example",
             "type": "debugpy",
             "request": "launch",
-            "program": "${workspaceFolder}/examples/image_generation.py",
+            "program": "${workspaceFolder}/scripts/twitter_image_post.py",
             "console": "integratedTerminal",
             "cwd": "${workspaceFolder}"
         },

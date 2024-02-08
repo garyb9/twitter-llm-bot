@@ -32,7 +32,7 @@ class TwitterAsyncWrapper:
         response = await self.client.create_tweet(text=text)
         return response
 
-    async def post_image_tweet(self, image_path: str, status_text: str = ""):
+    async def post_image_tweet(self, image_path: str, text: str = ""):
         """
         Posts a tweet with an image.
 
@@ -45,5 +45,5 @@ class TwitterAsyncWrapper:
         """
         media = self.client.media_upload(filename=image_path)
         response = self.client.create_tweet(
-            status=status_text, media_ids=[media.media_id])
+            status=text, media_ids=[media.media_id])
         return response

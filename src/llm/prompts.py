@@ -6,16 +6,17 @@ import logging
 from typing import List
 
 # Load prompts configuration
-prompts_config_path = os.path.abspath(os.path.join(
-    os.path.dirname(__file__), '../../data/prompts_config.json'))
+prompts_config_chat_path = os.path.abspath(os.path.join(
+    os.path.dirname(__file__), '../../data/prompts_config_chat.json'))
 
-with open(prompts_config_path, 'r') as file:
-    prompts_config = json.load(file)
+with open(prompts_config_chat_path, 'r') as file:
+    prompts_config_chat = json.load(file)
 
-# Function to prepare a random prompt
+with open(prompts_config_chat_path.replace('chat', 'dalle3'), 'r') as file:
+    prompts_config_image = json.load(file)
 
 
-def prepare_prompt(category: str = None, chosen_var: str = None) -> List[str]:
+def prepare_prompt_for_text_model(category: str = None, chosen_var: str = None) -> List[str]:
     """
     Prepares and formats a prompt based on the given category and variable.
 
@@ -31,9 +32,9 @@ def prepare_prompt(category: str = None, chosen_var: str = None) -> List[str]:
     """
     try:
         if not category:
-            category = random.choice(list(prompts_config.keys()))
+            category = random.choice(list(prompts_config_chat.keys()))
 
-        prompt_config = random.choice(prompts_config[category])
+        prompt_config = random.choice(prompts_config_chat[category])
         messages = prompt_config['messages']
 
         input_variables = {
@@ -47,7 +48,40 @@ def prepare_prompt(category: str = None, chosen_var: str = None) -> List[str]:
         return messages
     except Exception as e:
         logging.error(
-            f"An unexpected error occurred during prompt preparation: {e}")
+            f"An unexpected error occurred during prompt preparation for chat: {e}")
+        raise
+
+
+def prepare_prompt_for_image_model(chosen_var: str = None) -> List[str]:
+    """
+    Prepares and formats a prompt based on the given category and variable.
+    This prompt is to be used by a Image Generation model (such as Dalle 3).
+
+    Args:
+        chosen_var (str, optional): A specific variable to use in the prompt. If None, a random variable is chosen.
+
+    Returns:
+        list: A list of formatted messages for the prompt.
+
+    Raises:
+        Exception: If an error occurs during the prompt preparation.
+    """
+    try:
+        prompts_config_image = random.choice(prompts_config_chat)
+        messages = prompts_config_image['messages']
+
+        input_variables = {
+            var_name: (random.choice(values) if not chosen_var else chosen_var)
+            for var_name, values in prompts_config_image['input_variables'].items()
+        }
+
+        for message in messages:
+            message['content'] = message['content'].format(**input_variables)
+
+        return messages
+    except Exception as e:
+        logging.error(
+            f"An unexpected error occurred during prompt preparation for image: {e}")
         raise
 
 

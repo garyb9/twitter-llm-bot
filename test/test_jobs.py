@@ -14,7 +14,7 @@ async def test_generate_tweets_job(mocker):
     # Patch the dependencies using mocker
     prepare_prompt_ret_val = ["Test prompt"]
     mock_prepare = mocker.patch(
-        "scheduler.jobs.prepare_prompt",
+        "scheduler.jobs.prepare_prompt_for_text_model",
         return_value=prepare_prompt_ret_val,
         autospec=True
     )
@@ -27,7 +27,7 @@ async def test_generate_tweets_job(mocker):
     # Call the function
     await jobs.generate_tweets_job(mock_redis)
 
-    # Assert prepare_prompt was called correctly
+    # Assert prepare_prompt_for_text_model was called correctly
     mock_prepare.assert_called_once_with("quote_tweets")
 
     # Assert generate_text_async was called with correct parameters
