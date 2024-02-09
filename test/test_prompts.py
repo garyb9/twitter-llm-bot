@@ -1,10 +1,10 @@
 import pytest
 from src.llm.openai import generate_text_async
-from llm.prompts import str_to_list_formatter, prepare_prompt_for_text_model
+from llm.prompts import quote_formatter, prepare_prompt_for_text_model
 
 
 def test_prepare_prompt_structure():
-    messages = prepare_prompt_for_text_model()
+    messages, var = prepare_prompt_for_text_model()
     assert isinstance(
         messages, list), "The result should be a list of messages."
     assert len(messages) > 0, "The result list should not be empty."
@@ -20,15 +20,14 @@ def test_prepare_prompt_structure():
 @pytest.mark.skip(reason="Enable when direct prompting is required for testing")
 async def test_generate_text():
     category = 'quote_tweets'
-    chosen_var = "Max Stirner"
-    messages = prepare_prompt_for_text_model(
-        category=category, chosen_var=chosen_var)
+    messages, var = prepare_prompt_for_text_model(
+        category=category)
 
     generated_response = await generate_text_async(
         messages,
         temperature=0.9,
         max_tokens=1500,
-        formatter=str_to_list_formatter
+        formatter=quote_formatter
     )
 
     assert isinstance(generated_response, list)

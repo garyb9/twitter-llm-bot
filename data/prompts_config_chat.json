@@ -4,11 +4,11 @@
       "messages": [
         {
           "role": "system",
-          "content": "I am a tweet and quote generating machine. Generate 10 tweets of quotes by {name}, format each tweet as 2-3 lines, without hashtags and emojis, end with name."
+          "content": "I am a quote generating machine. Generate 10 quotes by {name}. No hashtags, no emojis and no name."
         },
         {
           "role": "user",
-          "content": "Generate tweets inspired by the philosopher {name}."
+          "content": "Generate quotes inspired by the philosopher {name}."
         }
       ],
       "input_variables": {

@@ -225,31 +225,105 @@ def draw_text_with_thin_outline(draw, text, position, font, text_color, outline_
     draw.text(position, text, font=font, fill=text_color)
 
 
-def extend_image_upwards(
-    image_path,
-    save_path,
-    extension_height=100  # The number of pixels to extend upwards
-):
+def resize_to_aspect(image_path, save_path, target_resolution=(1080, 1920)):
+    """
+    Resizes an image to fit within a target resolution, 
+    maintaining the original aspect ratio.
+
+    Parameters:
+    - image_path (str): Path to the source image.
+    - save_path (str): Path where the resized image will be saved.
+    - target_resolution (tuple): The target resolution to fit the image into, maintaining aspect ratio.
+    """
+    # Load the image
+    image = Image.open(image_path)
+
+    # Use thumbnail to resize within the target resolution while maintaining aspect ratio
+    image.thumbnail(target_resolution, Image.Resampling.LANCZOS)
+
+    # Save the resized image
+    image.save(save_path)
+
+
+def resize_and_crop_to_aspect(image_path, save_path, target_size=(1080, 1920)):
+    """
+    Resizes and crops an image to match a specific aspect ratio and size.
+
+    Parameters:
+    - image_path (str): Path to the source image.
+    - save_path (str): Path where the modified image will be saved.
+    - target_size (tuple): The target size and aspect ratio in pixels.
+    """
+    # Load the image
+    image = Image.open(image_path)
+    original_width, original_height = image.size
+
+    target_width, target_height = target_size
+    target_aspect = target_width / target_height
+
+    # Calculate the aspect ratio of the original image
+    original_aspect = original_width / original_height
+
+    if original_aspect > target_aspect:
+        # Image is wider than the target aspect ratio, need to crop width
+        new_width = int(target_aspect * original_height)
+        new_height = original_height
+        offset = (original_width - new_width) / 2
+        crop_area = (offset, 0, original_width - offset, new_height)
+    else:
+        # Image is taller than the target aspect ratio, need to crop height
+        new_height = int(original_width / target_aspect)
+        new_width = original_width
+        offset = (original_height - new_height) / 2
+        crop_area = (0, offset, new_width, original_height - offset)
+
+    # Crop the image to the calculated area
+    cropped_image = image.crop(crop_area)
+
+    # Resize the cropped image to the target size
+    resized_image = cropped_image.resize(target_size, Image.ANTIALIAS)
+
+    # Save the modified image
+    resized_image.save(save_path)
+
+
+def extend_image_upwards(image_path, save_path, extension_percentage=10):
+    """
+    Correctly extends the top of an image upwards by stretching a specified percentage of the top part of the image.
+    The stretched portion is then added to the top, effectively increasing the image's total height by a defined percentage.
+
+    Parameters:
+    - image_path (str): Path to the source image.
+    - save_path (str): Path where the modified image will be saved.
+    - extension_percentage (int): The percentage of the original image height by which to extend the image upwards.
+    """
     # Load the image
     image = Image.open(image_path)
     image_width, image_height = image.size
 
-    # Define the rectangle's height at the top of the image to be replicated
-    rect_height = extension_height  # The height of the rectangle to replicate
+    # Calculate the total height increase based on the extension percentage
+    additional_height = int(image_height * (extension_percentage / 100.0))
 
-    # Crop the rectangle from the top of the image
-    top_rectangle = image.crop((0, 0, image_width, rect_height))
+    # Calculate the height of the portion to be stretched (based on what portion you want to stretch, e.g., top 10%)
+    # For direct stretching without selecting a smaller part
+    stretch_height_portion = additional_height
 
-    # Create a new blank image with the same width and increased height
-    new_height = image_height + extension_height
-    new_image = Image.new('RGB', (image_width, new_height))
+    # Crop the top portion of the image that will be stretched to fill the additional height
+    top_portion = image.crop((0, 0, image_width, stretch_height_portion))
 
-    # Paste the top rectangle repeatedly to fill the extended area
-    for i in range(0, extension_height, rect_height):
-        new_image.paste(top_rectangle, (0, i))
+    # Resize (stretch) the selected top portion to the additional height
+    stretched_portion = top_portion.resize(
+        (image_width, additional_height), Image.LANCZOS)
 
-    # Paste the original image below the extended area
-    new_image.paste(image, (0, extension_height))
+    # Create a new blank image with the same width and the increased height
+    new_height = image_height + additional_height
+    new_image = Image.new('RGB', (image_width, new_height), (255, 255, 255))
+
+    # Paste the stretched portion to the top of the new image
+    new_image.paste(stretched_portion, (0, 0))
+
+    # Paste the original image below the stretched area
+    new_image.paste(image, (0, additional_height))
 
     # Save the modified image
     new_image.save(save_path)

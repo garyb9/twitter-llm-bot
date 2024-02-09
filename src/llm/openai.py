@@ -4,7 +4,7 @@ from PIL import Image
 from openai import AsyncOpenAI
 from io import BytesIO
 from base64 import decodebytes
-from PIL import Image
+from llm.prompts import quote_formatter
 openai_api_key = os.getenv('OPENAI_API_KEY')
 openai_organization = os.getenv('OPENAI_ORG_ID')
 
@@ -26,7 +26,7 @@ async def generate_text_async(
     model=models[1],
     temperature=0.7,
     max_tokens=100,
-    formatter: Callable[[str], List[str]] = None
+    formatter: Callable[[str], List[str]] = quote_formatter
 ) -> Union[str, List[str]]:
     """
     Asynchronously generates text using the specified GPT model.
@@ -37,6 +37,7 @@ async def generate_text_async(
         temperature (float): The temperature to use for the generation.
         max_tokens (int): The maximum number of tokens to generate.
     """
+
     chat_completion = await client.chat.completions.create(
         messages=prompt_messages,
         model=model,
@@ -44,7 +45,7 @@ async def generate_text_async(
         max_tokens=max_tokens,
     )
     raw_content = chat_completion.choices[0].message.content
-    formatted_content = formatter(raw_content) if formatter else [raw_content]
+    formatted_content = formatter(raw_content) if formatter else raw_content
     return formatted_content
 
 
@@ -66,11 +67,11 @@ async def generate_image_async(
         model=model,
         prompt=prompt,
         n=n,
+        quality='hd',
+        size='1024x1792',
         response_format='b64_json'
     )
 
-    # raw_images = response.data
-    # b64_json = raw_images[0].b64_json
     images = [
         Image.open(BytesIO(decodebytes(bytes(b64_img.b64_json, "utf-8")))) for b64_img in response.data
     ]

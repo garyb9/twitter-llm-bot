@@ -4,7 +4,7 @@ import logging
 from typing import Callable
 from llm import openai
 from twitter.twitter_wrapper import TwitterAsyncWrapper
-from llm.prompts import prepare_prompt_for_text_model, str_to_list_formatter
+import llm.prompts as prompts
 from db.redis_wrapper import RedisClientWrapper
 
 TWEET_QUEUE = "tweets"
@@ -29,20 +29,23 @@ def job_decorator(job_id: str):
 
 @job_decorator("generate_tweets_job")
 async def generate_tweets_job(redis_wrapper: RedisClientWrapper):
-    messages = prepare_prompt_for_text_model("quote_tweets")
+    messages, author = prompts.prepare_prompt_for_text_model("quote_tweets")
 
     generated_response = await openai.generate_text_async(
         messages,
         temperature=0.9,
         max_tokens=2000,
-        formatter=str_to_list_formatter
+        formatter=prompts.quote_formatter
     )
+
+    formatted_response_with_author = prompts.add_author(
+        generated_response, author)
 
     logging.info(
-        f"Tweets generated:\n{json.dumps(generated_response, indent=4)}"
+        f"Tweets generated:\n{json.dumps(formatted_response_with_author, indent=4)}"
     )
 
-    await redis_wrapper.fifo_push_list(TWEET_QUEUE, generated_response)
+    await redis_wrapper.fifo_push_list(TWEET_QUEUE, formatted_response_with_author)
 
 
 @job_decorator("post_text_tweet_job")

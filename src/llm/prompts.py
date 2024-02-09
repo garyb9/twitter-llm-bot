@@ -16,13 +16,12 @@ with open(prompts_config_chat_path.replace('chat', 'dalle3'), 'r') as file:
     prompts_config_image = json.load(file)
 
 
-def prepare_prompt_for_text_model(category: str = None, chosen_var: str = None) -> List[str]:
+def prepare_prompt_for_text_model(category: str = None) -> (List[str], str):
     """
     Prepares and formats a prompt based on the given category and variable.
 
     Args:
         category (str, optional): The category of prompts to choose from. If None, a random category is selected.
-        chosen_var (str, optional): A specific variable to use in the prompt. If None, a random variable is chosen.
 
     Returns:
         list: A list of formatted messages for the prompt.
@@ -39,8 +38,7 @@ def prepare_prompt_for_text_model(category: str = None, chosen_var: str = None) 
 
         # if 'input_variables' in prompt_config:
         input_variables = {
-            var_name: (random.choice(values)
-                       if not chosen_var else chosen_var)
+            var_name: random.choice(values)
             for var_name, values in prompt_config['input_variables'].items()
         }
 
@@ -48,7 +46,9 @@ def prepare_prompt_for_text_model(category: str = None, chosen_var: str = None) 
             message['content'] = message['content'].format(
                 **input_variables)
 
-        return messages
+        var = next(iter(input_variables.values()))
+
+        return messages, var
     except Exception as e:
         logging.error(
             f"An unexpected error occurred during prompt preparation for chat: {e}")
@@ -89,13 +89,24 @@ def prepare_prompt_for_image_model(chosen_var: str = None) -> List[str]:
         raise
 
 
-def str_to_list_formatter(text: str) -> List[str]:
-    items = [line.strip() for line in text.split('\n\n')]
+def quote_formatter(text: str) -> List[str]:
+    items = [line.strip() for line in text.split('\n')]
 
     # Compiling a regex pattern to match the leading numbering (e.g., "1. ")
     pattern = re.compile(r'^\d+\.\s*"')
 
     # Removing the leading numbers and unnecessary characters
-    formatted = [pattern.sub('"', line.replace("\\'", "'"))
-                 for line in items]
+    formatted = [
+        pattern.sub('"', line.replace("\'", "'"))
+        for line in items
+    ]
+
+    return formatted
+
+
+def add_author(quotes: List[str], author: str):
+    formatted = [
+        f"{line}\n\n- {author} -"
+        for line in quotes
+    ]
     return formatted
