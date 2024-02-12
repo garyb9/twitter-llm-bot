@@ -4,11 +4,12 @@ from fastapi import FastAPI, Request
 from uvicorn import Config, Server
 from contextlib import asynccontextmanager
 from db.redis_wrapper import RedisClientWrapper
+from scheduler.jobs import TWEET_QUEUE
 from scheduler.scheduler_wrapper import SchedulerWrapper  # Adjusted import
 
 
 @asynccontextmanager
-async def lifespan(app: FastAPI) -> None:
+async def lifespan(app: FastAPI):
     # Startup
     logging.info("Initializing resources")
 
@@ -65,3 +66,11 @@ async def stop_scheduler(request: Request):
         scheduler.shutdown()
         return {"message": "Scheduler stopped."}
     return {"message": "Scheduler is not running."}
+
+@app.get("/fifo/peek/{queue_name?}")
+async def peek_fifo(queue_name: str = TWEET_QUEUE):
+    redis_wrapper: RedisClientWrapper = app.state.redis_wrapper
+    messages = await redis_wrapper.fifo_peek(queue_name)
+    if not messages:
+        return {"message": "The queue is empty."}
+    return {"messages": messages}
