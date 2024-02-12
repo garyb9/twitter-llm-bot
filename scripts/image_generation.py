@@ -10,7 +10,6 @@ sys.path.append(
 import setup_env
 from typing import List
 import llm.openai as openai
-from llm.prompts import quote_formatter
 from tweet_generation import tweet_generation
 
 

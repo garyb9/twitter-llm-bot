@@ -10,7 +10,7 @@ sys.path.append(
 import setup_env
 from typing import List
 import llm.openai as openai
-from llm.prompts import quote_formatter
+import llm.formatters as formatters
 
 
 async def tweet_generation(philosopher: str = 'Max Stirner') -> List[str]:
@@ -30,10 +30,18 @@ async def tweet_generation(philosopher: str = 'Max Stirner') -> List[str]:
         messages,
         temperature=0.9,
         max_tokens=1500,
-        formatter=quote_formatter
+        formatter=formatters.line_split_formatter
     )
 
     logging.info(
         f"Tweets generated:\n{json.dumps(generated_response, indent=4)}"
     )
     return generated_response
+
+# Run
+if __name__ == "__main__":
+    try:
+        asyncio.run(tweet_generation())
+    except Exception as e:
+        logging.error(f"An unexpected error occurred: {e}")
+        sys.exit(1)

@@ -5,6 +5,7 @@ from typing import Callable
 from llm import openai
 from twitter.twitter_wrapper import TwitterAsyncWrapper
 import llm.prompts as prompts
+import llm.formatters as formatters
 from db.redis_wrapper import RedisClientWrapper
 
 TWEET_QUEUE = "tweets"
@@ -35,10 +36,10 @@ async def generate_tweets_job(redis_wrapper: RedisClientWrapper):
         messages,
         temperature=0.9,
         max_tokens=2000,
-        formatter=prompts.quote_formatter
+        formatter=formatters.line_split_formatter
     )
 
-    formatted_response_with_author = prompts.add_author(
+    formatted_response_with_author = formatters.add_author(
         generated_response, author)
 
     logging.info(

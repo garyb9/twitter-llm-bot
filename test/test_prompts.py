@@ -1,6 +1,8 @@
 import pytest
-from src.llm.openai import generate_text_async
-from llm.prompts import quote_formatter, prepare_prompt_for_text_model
+import setup_env
+from llm.openai import generate_text_async
+from llm.prompts import prepare_prompt_for_text_model
+from llm.formatters import line_split_formatter
 
 
 def test_prepare_prompt_structure():
@@ -27,7 +29,7 @@ async def test_generate_text():
         messages,
         temperature=0.9,
         max_tokens=1500,
-        formatter=quote_formatter
+        formatter=line_split_formatter
     )
 
     assert isinstance(generated_response, list)

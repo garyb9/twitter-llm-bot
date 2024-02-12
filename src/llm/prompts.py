@@ -3,7 +3,7 @@ import re
 import json
 import random
 import logging
-from typing import List
+from typing import List, Tuple
 
 # Load prompts configuration
 prompts_config_chat_path = os.path.abspath(os.path.join(
@@ -16,7 +16,7 @@ with open(prompts_config_chat_path.replace('chat', 'dalle3'), 'r') as file:
     prompts_config_image = json.load(file)
 
 
-def prepare_prompt_for_text_model(category: str = None) -> (List[str], str):
+def prepare_prompt_for_text_model(category: str = None) -> Tuple[List[str], str]:
     """
     Prepares and formats a prompt based on the given category and variable.
 
@@ -88,25 +88,3 @@ def prepare_prompt_for_image_model(chosen_var: str = None) -> List[str]:
             f"An unexpected error occurred during prompt preparation for image: {e}")
         raise
 
-
-def quote_formatter(text: str) -> List[str]:
-    items = [line.strip() for line in text.split('\n')]
-
-    # Compiling a regex pattern to match the leading numbering (e.g., "1. ")
-    pattern = re.compile(r'^\d+\.\s*"')
-
-    # Removing the leading numbers and unnecessary characters
-    formatted = [
-        pattern.sub('"', line.replace("\'", "'"))
-        for line in items
-    ]
-
-    return formatted
-
-
-def add_author(quotes: List[str], author: str):
-    formatted = [
-        f"{line}\n\n- {author} -"
-        for line in quotes
-    ]
-    return formatted

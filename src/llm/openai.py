@@ -4,7 +4,6 @@ from PIL import Image
 from openai import AsyncOpenAI
 from io import BytesIO
 from base64 import decodebytes
-from llm.prompts import quote_formatter
 openai_api_key = os.getenv('OPENAI_API_KEY')
 openai_organization = os.getenv('OPENAI_ORG_ID')
 
@@ -26,7 +25,7 @@ async def generate_text_async(
     model=models[1],
     temperature=0.7,
     max_tokens=100,
-    formatter: Callable[[str], List[str]] = quote_formatter
+    formatter: Callable[[str], List[str]] = None
 ) -> Union[str, List[str]]:
     """
     Asynchronously generates text using the specified GPT model.
@@ -45,7 +44,7 @@ async def generate_text_async(
         max_tokens=max_tokens,
     )
     raw_content = chat_completion.choices[0].message.content
-    formatted_content = formatter(raw_content) if formatter else raw_content
+    formatted_content = formatter(formatted_content) if formatter else raw_content
     return formatted_content
 
 

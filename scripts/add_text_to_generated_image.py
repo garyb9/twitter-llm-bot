@@ -12,6 +12,7 @@ sys.path.append(
 import setup_env
 from images import image_utils
 import llm.prompts as prompts
+import llm.formatters as formatters
 from PIL import Image
 from llm import openai
 
@@ -28,9 +29,11 @@ async def main() -> None:
         messages,
         temperature=0.9,
         max_tokens=1500,
-        formatter=prompts.quote_formatter
+        formatter=formatters.line_split_formatter
     )
-    formatted_response_with_author = prompts.add_author(
+    
+    # Pipe an additional formatter to add author
+    formatted_response_with_author = formatters.add_author(
         generated_response, author)
 
     logging.info(

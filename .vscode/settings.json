@@ -1,5 +1,8 @@
 {
-    "autopep8.args": ["--ignore", "E402"],
+    "autopep8.args": [
+        "--ignore",
+        "E402"
+    ],
     "editor.formatOnSave": true,
     "python.analysis.extraPaths": [
         "./src"
@@ -7,4 +10,9 @@
     "terminal.integrated.env.linux": {
         "GTK_PATH": ""
     },
+    "python.testing.pytestArgs": [
+        "test"
+    ],
+    "python.testing.unittestEnabled": false,
+    "python.testing.pytestEnabled": true,
 }

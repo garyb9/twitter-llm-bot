@@ -1,8 +1,8 @@
 import pytest
+import setup_env
 import scheduler.jobs as jobs
 from db.redis_wrapper import RedisClientWrapper
-from llm.prompts import quote_formatter
-
+import llm.formatters as formatters
 
 @pytest.mark.asyncio
 async def test_generate_tweets_job(mocker):
@@ -13,9 +13,9 @@ async def test_generate_tweets_job(mocker):
 
     # Patch the dependencies using mocker
     prepare_prompt_ret_val = ["Test prompt"]
-    prepare_prompt_ret_var = {"name": "name"}
+    prepare_prompt_ret_var = "name"
     mock_prepare = mocker.patch(
-        "scheduler.jobs.prepare_prompt_for_text_model",
+        "scheduler.jobs.prompts.prepare_prompt_for_text_model",
         return_value=(prepare_prompt_ret_val, prepare_prompt_ret_var),
         autospec=True
     )
@@ -36,12 +36,17 @@ async def test_generate_tweets_job(mocker):
         prepare_prompt_ret_val,
         temperature=0.9,
         max_tokens=2000,
-        formatter=quote_formatter
+        formatter=formatters.line_split_formatter
     )
+
+    formatted_response_with_author = formatters.add_author(
+        generate_text_ret_val, prepare_prompt_ret_var)
+        
+    assert formatted_response_with_author == ['Tweet 1\n\n- name -', 'Tweet 2\n\n- name -']
 
     # Assert that fifo_push_list was called with the correct arguments
     mock_redis.fifo_push_list.assert_called_once_with(
-        jobs.TWEET_QUEUE, generate_text_ret_val)
+        jobs.TWEET_QUEUE, formatted_response_with_author)
 
 
 @pytest.mark.asyncio
