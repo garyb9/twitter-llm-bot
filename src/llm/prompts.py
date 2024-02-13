@@ -28,7 +28,6 @@ def prepare_prompt_for_text_model(category: str = None) -> Tuple[List[str], str]
         messages = prompt_config['messages']
 
         # if 'input_variables' in prompt_config:
-        t = prompt_config['input_variables'].items()
         input_variables = {
             var_name: random.choice(values)
             for var_name, values in prompt_config['input_variables'].items()
