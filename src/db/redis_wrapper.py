@@ -49,8 +49,8 @@ class RedisClientWrapper:
         """Pop a message from a FIFO queue."""
         self.ensure_client_initialized()
         result = await self.client.brpop(name, timeout)
-        return result.decode("utf-8") if result else None
-    
+        return result[1].decode("utf-8") if result else None
+
     async def fifo_peek(self, name: str = "default_queue", start: int = 0, end: int = -1) -> list:
         """
         Peek at messages in a FIFO queue without removing them.
@@ -58,6 +58,14 @@ class RedisClientWrapper:
         self.ensure_client_initialized()
         messages = await self.client.lrange(name, start, end)
         return [message.decode("utf-8") for message in messages]
+
+    async def fifo_clear(self, name: str) -> None:
+        """
+        Clear all messages from a specified FIFO queue.
+        """
+        self.ensure_client_initialized()
+        await self.client.delete(name)
+        logging.info(f"Queue '{name}' has been cleared.")
 
 
 def start_redis():

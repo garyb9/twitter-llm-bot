@@ -24,8 +24,7 @@ async def lifespan(app: FastAPI):
     app.state.redis_wrapper = redis_wrapper
 
     # Initialize scheduler with Redis client
-    app.state.scheduler_wrapper = SchedulerWrapper(
-        redis_wrapper=redis_wrapper, start=True)
+    app.state.scheduler_wrapper = SchedulerWrapper(redis_wrapper=redis_wrapper)
 
     yield
 
@@ -50,7 +49,7 @@ async def run_server() -> None:
     await server.serve()
 
 
-@app.get("/start-scheduler")
+@app.post("/start-scheduler")
 async def start_scheduler(request: Request):
     scheduler = request.app.state.scheduler_wrapper.scheduler
     if not scheduler.running:
@@ -59,7 +58,7 @@ async def start_scheduler(request: Request):
     return {"message": "Scheduler is already running."}
 
 
-@app.get("/stop-scheduler")
+@app.post("/stop-scheduler")
 async def stop_scheduler(request: Request):
     scheduler = request.app.state.scheduler_wrapper.scheduler
     if scheduler.running:
@@ -67,10 +66,28 @@ async def stop_scheduler(request: Request):
         return {"message": "Scheduler stopped."}
     return {"message": "Scheduler is not running."}
 
-@app.get("/fifo/peek/{queue_name?}")
-async def peek_fifo(queue_name: str = TWEET_QUEUE):
+
+@app.get("/get-tweet-queue")
+async def get_twitter_queue():
     redis_wrapper: RedisClientWrapper = app.state.redis_wrapper
-    messages = await redis_wrapper.fifo_peek(queue_name)
+    messages = await redis_wrapper.fifo_peek(TWEET_QUEUE)
     if not messages:
-        return {"message": "The queue is empty."}
-    return {"messages": messages}
+        return {"message": f"{TWEET_QUEUE} queue is empty."}
+    return messages
+
+
+@app.post("/clear-tweet-queue")
+async def clear_tweet_queue(request: Request):
+    redis_wrapper: RedisClientWrapper = request.app.state.redis_wrapper
+    await redis_wrapper.fifo_clear(TWEET_QUEUE)
+    return {"message": f"'{TWEET_QUEUE}' has been cleared."}
+
+
+@app.get("/list-jobs")
+async def list_scheduled_jobs(request: Request):
+    """
+    Lists the currently scheduled jobs and their next run times.
+    """
+    scheduler_wrapper: SchedulerWrapper = request.app.state.scheduler_wrapper
+    jobs_info = scheduler_wrapper.get_jobs_info()
+    return jobs_info

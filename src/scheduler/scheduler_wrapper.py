@@ -1,41 +1,48 @@
 import json
 import logging
 import random
+from typing import List
+from datetime import datetime, timedelta
+from db.redis_wrapper import RedisClientWrapper
 import scheduler.jobs as jobs
 from apscheduler.schedulers.asyncio import AsyncIOScheduler
 from apscheduler.jobstores.base import JobLookupError
 
-DAILY_NUMBER_OF_TWEET_GENERATIONS = 5
+DAILY_NUMBER_OF_TWEET_GENERATIONS = 2
 DAILY_NUMBER_OF_IMAGE_GENERATIONS = 5
 DAILY_NUMBER_OF_TEXT_TWEETS = 10
 DAILY_NUMBER_OF_IMAGE_TWEETS = 2
 
 
 class SchedulerWrapper:
-    def __init__(self, redis_wrapper, start: bool = True):
+    def __init__(self, redis_wrapper: RedisClientWrapper):
         self.scheduler = AsyncIOScheduler()
         self.redis_wrapper = redis_wrapper
-        self.initialize_scheduler(start)
+        self.initialize_scheduler()
 
-    def initialize_scheduler(self, start: bool) -> None:
-        # Add the periodic reshuffle job
-        job_id = "periodic_scheduler_job_time_reshuffle"
-        hour, minute = 0, 0
+    def initialize_scheduler(self) -> None:
+        # Add the periodic reshuffle job first
 
-        self.scheduler.add_job(
+        self.add_job_to_scheduler(
             self.periodic_scheduler_job_time_reshuffle,
-            trigger='cron',
-            hour=hour,
-            minute=minute,
-            id=job_id
+            "periodic_scheduler_job_time_reshuffle",
+            ["00:00"]
         )
-        logging.info(
-            f"`{job_id}` will run today at: {hour:02d}:{minute:02d}")
 
-        # Add other jobs to the scheduler
-        self.add_jobs_to_scheduler()
-        if start:
-            self.scheduler.start()
+        # Add all other jobs to the scheduler and start
+        self.init_sheduler_jobs()
+        self.scheduler.start()
+
+        # Add jobs to run immediately
+        run_time = datetime.now() + timedelta(minutes=1)  # run in a minute from now
+        formatted_run_time = run_time.strftime("%H:%M")
+
+        self.add_job_to_scheduler(
+            jobs.generate_tweets_job,
+            "generate_tweets_job_init",
+            [formatted_run_time],
+            self.redis_wrapper
+        )
 
     def calculate_run_times(self, num_runs: int) -> list:
         interval = 24 // num_runs
@@ -47,21 +54,31 @@ class SchedulerWrapper:
             for _ in range(num_runs)
         ]
 
-    def add_jobs_to_scheduler(self) -> None:
+    def init_sheduler_jobs(self) -> None:
         # Add tweet generation jobs
         times_to_run = self.calculate_run_times(
             DAILY_NUMBER_OF_TWEET_GENERATIONS)
-        self.add_jobs(jobs.generate_tweets_job,
-                      "generate_tweets_job", times_to_run)
+        self.add_job_to_scheduler(
+            jobs.generate_tweets_job,
+            "generate_tweets_job",
+            times_to_run,
+            self.redis_wrapper
+        )
 
         # Add text tweet posting jobs
         times_to_run = self.calculate_run_times_random(
             DAILY_NUMBER_OF_TEXT_TWEETS)
         times_to_run.sort()
-        self.add_jobs(jobs.post_text_tweet_job,
-                      "post_text_tweet_job", times_to_run)
+        self.add_job_to_scheduler(
+            jobs.post_text_tweet_job,
+            "post_text_tweet_job",
+            times_to_run,
+            self.redis_wrapper
+        )
 
-    def add_jobs(self, job_function, job_id_base, times_to_run) -> None:
+        # TODO: add image generation jobs
+
+    def add_job_to_scheduler(self, job_function, job_id_base: str, times_to_run: List[str], *args) -> None:
         for i, time in enumerate(times_to_run):
             hour, minute = map(int, time.split(':'))
             job_id = f"{job_id_base}_{i+1}"
@@ -72,11 +89,22 @@ class SchedulerWrapper:
                 hour=hour,
                 minute=minute,
                 id=job_id,
-                args=[self.redis_wrapper]
+                args=args
             )
 
         logging.info(
             f"{job_id_base} will run at: \n{json.dumps(times_to_run, indent=2)}")
+
+    def get_jobs_info(self) -> List[str]:
+        """
+        Retrieves information about currently scheduled jobs.
+        """
+        jobs_info = []
+        for job in self.scheduler.get_jobs():
+            run_time = job.next_run_time.strftime(
+                "%H:%M") if job.next_run_time else "None"
+            jobs_info.append(f"{job.id} -> {run_time}")
+        return jobs_info
 
     async def periodic_scheduler_job_time_reshuffle(self) -> None:
         for job in self.scheduler.get_jobs():
@@ -85,4 +113,4 @@ class SchedulerWrapper:
                     self.scheduler.remove_job(job.id)
             except JobLookupError:
                 pass  # Job was already removed or does not exist
-        self.add_jobs_to_scheduler()
+        self.init_sheduler_jobs()

@@ -44,7 +44,7 @@ async def generate_text_async(
         max_tokens=max_tokens,
     )
     raw_content = chat_completion.choices[0].message.content
-    formatted_content = formatter(formatted_content) if formatter else raw_content
+    formatted_content = formatter(raw_content) if formatter else raw_content
     return formatted_content
 
 

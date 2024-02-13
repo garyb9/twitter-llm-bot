@@ -18,16 +18,7 @@ with open(prompts_config_chat_path.replace('chat', 'dalle3'), 'r') as file:
 
 def prepare_prompt_for_text_model(category: str = None) -> Tuple[List[str], str]:
     """
-    Prepares and formats a prompt based on the given category and variable.
-
-    Args:
-        category (str, optional): The category of prompts to choose from. If None, a random category is selected.
-
-    Returns:
-        list: A list of formatted messages for the prompt.
-
-    Raises:
-        Exception: If an error occurs during the prompt preparation.
+    Prepares and formats a prompt based on the given category
     """
     try:
         if not category:
@@ -37,6 +28,7 @@ def prepare_prompt_for_text_model(category: str = None) -> Tuple[List[str], str]
         messages = prompt_config['messages']
 
         # if 'input_variables' in prompt_config:
+        t = prompt_config['input_variables'].items()
         input_variables = {
             var_name: random.choice(values)
             for var_name, values in prompt_config['input_variables'].items()
@@ -59,15 +51,6 @@ def prepare_prompt_for_image_model(chosen_var: str = None) -> List[str]:
     """
     Prepares and formats a prompt based on the given category and variable.
     This prompt is to be used by a Image Generation model (such as Dalle 3).
-
-    Args:
-        chosen_var (str, optional): A specific variable to use in the prompt. If None, a random variable is chosen.
-
-    Returns:
-        list: A list of formatted messages for the prompt.
-
-    Raises:
-        Exception: If an error occurs during the prompt preparation.
     """
     try:
         prompt_config = random.choice(prompts_config_image)
@@ -87,4 +70,3 @@ def prepare_prompt_for_image_model(chosen_var: str = None) -> List[str]:
         logging.error(
             f"An unexpected error occurred during prompt preparation for image: {e}")
         raise
-
