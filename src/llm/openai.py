@@ -25,7 +25,6 @@ async def generate_text_async(
     model=models[1],
     temperature=0.7,
     max_tokens=100,
-    formatter: Callable[[str], List[str]] = None
 ) -> Union[str, List[str]]:
     """
     Asynchronously generates text using the specified GPT model.
@@ -44,8 +43,7 @@ async def generate_text_async(
         max_tokens=max_tokens,
     )
     raw_content = chat_completion.choices[0].message.content
-    formatted_content = formatter(raw_content) if formatter else raw_content
-    return formatted_content
+    return raw_content
 
 
 async def generate_image_async(

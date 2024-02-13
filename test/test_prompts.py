@@ -29,7 +29,6 @@ async def test_generate_text():
         messages,
         temperature=0.9,
         max_tokens=1500,
-        formatter=line_split_formatter
     )
 
     assert isinstance(generated_response, list)

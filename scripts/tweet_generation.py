@@ -30,13 +30,17 @@ async def tweet_generation(philosopher: str = 'Max Stirner') -> List[str]:
         messages,
         temperature=0.9,
         max_tokens=1500,
-        formatter=formatters.line_split_formatter
+    )
+
+    # Clean generated content
+    formatted_response = formatters.line_split_formatter(
+        generated_response
     )
 
     logging.info(
-        f"Tweets generated:\n{json.dumps(generated_response, indent=4)}"
+        f"Tweets generated:\n{json.dumps(formatted_response, indent=4)}"
     )
-    return generated_response
+    return formatted_response
 
 # Run
 if __name__ == "__main__":

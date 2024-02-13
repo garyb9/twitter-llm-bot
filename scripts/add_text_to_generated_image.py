@@ -29,12 +29,16 @@ async def main() -> None:
         messages,
         temperature=0.9,
         max_tokens=1500,
-        formatter=formatters.line_split_formatter
     )
-    
+
+    # Clean generated content
+    formatted_response = formatters.line_split_formatter(
+        generated_response
+    )
+
     # Pipe an additional formatter to add author
     formatted_response_with_author = formatters.add_author(
-        generated_response, author)
+        formatted_response, author)
 
     logging.info(
         f"Tweets generated:\n{json.dumps(formatted_response_with_author, indent=4)}"
@@ -46,13 +50,10 @@ async def main() -> None:
     generated_images[0].show()
     generated_images[0].save(image_path)
 
-#     text = """
-# "Obstacles show us the gap between where we are and where we want to be"
-
-# - Anonymous -
-#     """
     font_path = os.path.abspath(
         os.path.join(os.path.dirname(__file__), '..', 'data', 'gautamib.ttf'))
+
+    # centaur.ttf, avenir.ttf, gothma.ttf, lato.ttf
 
     image_utils.add_text_to_image(
         image_path=image_path,

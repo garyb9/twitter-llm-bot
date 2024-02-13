@@ -36,11 +36,16 @@ async def generate_tweets_job(redis_wrapper: RedisClientWrapper):
         messages,
         temperature=0.9,
         max_tokens=2000,
-        formatter=formatters.line_split_formatter
     )
 
+    # Clean generated content
+    formatted_response = formatters.line_split_formatter(
+        generated_response
+    )
+
+    # Pipe an additional formatter to add author
     formatted_response_with_author = formatters.add_author(
-        generated_response, author)
+        formatted_response, author)
 
     logging.info(
         f"Tweets generated:\n{json.dumps(formatted_response_with_author, indent=4)}"

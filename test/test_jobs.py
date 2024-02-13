@@ -3,6 +3,8 @@ import setup_env
 import scheduler.jobs as jobs
 from db.redis_wrapper import RedisClientWrapper
 import llm.formatters as formatters
+from llm.openai import models
+
 
 @pytest.mark.asyncio
 async def test_generate_tweets_job(mocker):
@@ -19,7 +21,7 @@ async def test_generate_tweets_job(mocker):
         return_value=(prepare_prompt_ret_val, prepare_prompt_ret_var),
         autospec=True
     )
-    generate_text_ret_val = ["Tweet 1", "Tweet 2"]
+    generate_text_ret_val = "\"Tweet 1\"\n\"Tweet 2\""
     mock_generate = mocker.patch(
         "llm.openai.generate_text_async",
         return_value=generate_text_ret_val
@@ -36,13 +38,21 @@ async def test_generate_tweets_job(mocker):
         prepare_prompt_ret_val,
         temperature=0.9,
         max_tokens=2000,
-        formatter=formatters.line_split_formatter
     )
 
+    # Clean generated content
+    formatted_response = formatters.line_split_formatter(
+        generate_text_ret_val
+    )
+
+    assert formatted_response == ["Tweet 1", "Tweet 2"]
+
+    # Pipe an additional formatter to add author
     formatted_response_with_author = formatters.add_author(
-        generate_text_ret_val, prepare_prompt_ret_var)
-        
-    assert formatted_response_with_author == ['Tweet 1\n\n- name -', 'Tweet 2\n\n- name -']
+        formatted_response, prepare_prompt_ret_var)
+
+    assert formatted_response_with_author == [
+        '\"Tweet 1\"\n\n- name -', '\"Tweet 2\"\n\n- name -']
 
     # Assert that fifo_push_list was called with the correct arguments
     mock_redis.fifo_push_list.assert_called_once_with(
