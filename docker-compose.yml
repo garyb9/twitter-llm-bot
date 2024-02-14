@@ -13,7 +13,7 @@ services:
       - SERVER_PORT=8080
       - REDIS_HOST=redis
       - REDIS_PORT=6380
-      # - TZ=ETC/GMT+2
+      - TZ=Etc/GMT+2
       - PYTHONUNBUFFERED=1
       # - ENV=dev
 

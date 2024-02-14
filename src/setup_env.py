@@ -21,3 +21,7 @@ logging.basicConfig(
 
 # Seed the random number generator with the current system time
 random.seed(time.time())
+
+# Set the timezone globally for the os environment
+os.environ['TZ'] = 'Etc/GMT+2' if not os.environ['TZ'] else os.environ['TZ']
+time.tzset()
