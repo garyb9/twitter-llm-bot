@@ -164,3 +164,7 @@ models/
 
 # Redis
 dump.rdb
+
+# Logs
+*.log
+app.log

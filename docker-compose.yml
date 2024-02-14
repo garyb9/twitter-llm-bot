@@ -1,15 +1,17 @@
 version: "3"
 
 services:
-  producer:
+  server:
     build: .
-    command: ["python", "./src/main.py"]
+    command: [ "python", "-u", "./src/main.py" ]
     ports:
       - "8080:8080"
     depends_on:
       - redis
     environment:
+      - PYTHONUNBUFFERED=1
       - REDIS_HOST=redis
+      - REDIS_PORT=6379
 
   redis:
     image: "redis:alpine"

@@ -16,9 +16,11 @@ DAILY_NUMBER_OF_IMAGE_TWEETS = 2
 
 class SchedulerWrapper:
     def __init__(self, redis_wrapper: RedisClientWrapper):
+        logging.info("Starting scheduler...")
         self.scheduler = AsyncIOScheduler()
         self.redis_wrapper = redis_wrapper
         self.initialize_scheduler()
+        logging.info("Scheduler running.")
 
     def initialize_scheduler(self) -> None:
         # Add the periodic reshuffle job first

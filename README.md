@@ -99,19 +99,19 @@ To simplify the setup and ensure a consistent environment for development and pr
 To build the Docker image for the Twitter bot, run the following command in the project root directory:
 
 ```bash
-docker-compose build
+sudo docker-compose build
 ```
 
 ### Running the Bot with Docker Compose
 The bot will start generating and posting tweets based on the prompts you specify in the code. You can customize the bot's behavior by modifying the prompts.
 ```bash
-docker-compose up
+sudo docker-compose up
 ```
 
 ### Stopping the Bot
 To stop the Twitter bot and any related services running via Docker Compose, run:
 ```bash
-docker-compose down
+sudo docker-compose down
 ```
 
 ## Contributing
