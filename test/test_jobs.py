@@ -3,7 +3,7 @@ import setup_env
 import scheduler.jobs as jobs
 from db.redis_wrapper import RedisClientWrapper
 import llm.formatters as formatters
-from llm.openai import models
+import consts
 
 
 @pytest.mark.asyncio
@@ -56,7 +56,7 @@ async def test_generate_tweets_job(mocker):
 
     # Assert that fifo_push_list was called with the correct arguments
     mock_redis.fifo_push_list.assert_called_once_with(
-        jobs.TWEET_QUEUE, formatted_response_with_author)
+        consts.TWEET_QUEUE, formatted_response_with_author)
 
 
 @pytest.mark.asyncio
@@ -77,7 +77,7 @@ async def test_post_text_tweet_job(mocker):
     await jobs.post_text_tweet_job(mock_redis)
 
     # Assertions
-    mock_redis.fifo_pop.assert_called_once_with(jobs.TWEET_QUEUE)
+    mock_redis.fifo_pop.assert_called_once_with(consts.TWEET_QUEUE)
     mock_create_tweet.assert_called_once_with(text=tweet_text)
 
 
@@ -103,6 +103,6 @@ async def test_post_image_tweet_job(mocker):
     await jobs.post_image_tweet_job(mock_redis)
 
     # Assertions
-    mock_redis.fifo_pop.assert_called_once_with(jobs.IMAGE_QUEUE)
+    mock_redis.fifo_pop.assert_called_once_with(consts.IMAGE_QUEUE)
     mock_media_upload.assert_called_once_with(image_path)
     mock_update_status.assert_called_once_with(status="", media_ids=['123'])

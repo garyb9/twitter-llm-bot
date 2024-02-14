@@ -3,14 +3,13 @@ import json
 import logging
 import random
 from typing import Callable
+from consts import IMAGE_QUEUE, TWEET_QUEUE
 from llm import openai
 from twitter.twitter_wrapper import TwitterAsyncWrapper
 import llm.prompts as prompts
 import llm.formatters as formatters
 from db.redis_wrapper import RedisClientWrapper
 
-TWEET_QUEUE = "tweets"
-IMAGE_QUEUE = "images"
 twitter_wrapper = TwitterAsyncWrapper()
 
 
@@ -43,14 +42,15 @@ async def generate_tweets_job(redis_wrapper: RedisClientWrapper):
     formatted_response = formatters.line_split_formatter(
         generated_response
     )
-    
+
     # Pipe an additional formatter to add author
     formatted_response_with_author = formatters.add_author(
         formatted_response, author)
 
     # Randomly merge both lists
-    formatted_merged = [random.choice([a, b]) for a, b in zip(formatted_response, formatted_response_with_author)] 
-    
+    formatted_merged = [random.choice([a, b]) for a, b in zip(
+        formatted_response, formatted_response_with_author)]
+
     logging.info(
         f"Tweets generated:\n{json.dumps(formatted_merged, indent=4)}"
     )
@@ -66,6 +66,8 @@ async def post_text_tweet_job(redis_wrapper: RedisClientWrapper):
         response = await twitter_wrapper.post_text_tweet(
             text=tweet_text)
         logging.info(f"Posted tweet response: {response}")
+    else:
+        logging.warning(f"Tweet queue is empty.")
 
 
 @job_decorator("post_image_tweet_job")
@@ -74,3 +76,5 @@ async def post_image_tweet_job(redis_wrapper: RedisClientWrapper):
     if image_path:
         response = twitter_wrapper.post_image_tweet(image_path)
         logging.info(f"Posted tweet with image response: {response}")
+    else:
+        logging.warning(f"Image queue is empty.")

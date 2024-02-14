@@ -1,6 +1,7 @@
 import json
 import logging
 import random
+import consts
 from typing import List
 from datetime import datetime, timedelta
 from db.redis_wrapper import RedisClientWrapper
@@ -8,22 +9,16 @@ import scheduler.jobs as jobs
 from apscheduler.schedulers.asyncio import AsyncIOScheduler
 from apscheduler.jobstores.base import JobLookupError
 
-DAILY_NUMBER_OF_TWEET_GENERATIONS = 2
-DAILY_NUMBER_OF_IMAGE_GENERATIONS = 5
-DAILY_NUMBER_OF_TEXT_TWEETS = 25
-DAILY_NUMBER_OF_IMAGE_TWEETS = 2
-
 
 class SchedulerWrapper:
     def __init__(self, redis_wrapper: RedisClientWrapper):
         self.scheduler = AsyncIOScheduler()
         self.redis_wrapper = redis_wrapper
         self.initialize_scheduler()
-        
 
     def initialize_scheduler(self) -> None:
         logging.info("Initializing scheduler...")
-        
+
         # Add the periodic reshuffle job first
         self.add_job_to_scheduler(
             self.periodic_scheduler_job_time_reshuffle,
@@ -45,7 +40,7 @@ class SchedulerWrapper:
             [formatted_run_time],
             self.redis_wrapper
         )
-        
+
         run_times = json.dumps(self.get_jobs_info(), indent=4)
         logging.info(f"Scheduler => Jobs running: {run_times}")
 
@@ -62,7 +57,7 @@ class SchedulerWrapper:
     def init_sheduler_jobs(self) -> None:
         # Add tweet generation jobs
         times_to_run = self.calculate_run_times(
-            DAILY_NUMBER_OF_TWEET_GENERATIONS)
+            consts.DAILY_NUMBER_OF_TWEET_GENERATIONS)
         self.add_job_to_scheduler(
             jobs.generate_tweets_job,
             "generate_tweets_job",
@@ -72,7 +67,7 @@ class SchedulerWrapper:
 
         # Add text tweet posting jobs
         times_to_run = self.calculate_run_times_random(
-            DAILY_NUMBER_OF_TEXT_TWEETS)
+            consts.DAILY_NUMBER_OF_TEXT_TWEETS)
         times_to_run.sort()
         self.add_job_to_scheduler(
             jobs.post_text_tweet_job,
