@@ -1,3 +1,4 @@
+![Decepticon](./data/logo.png "Decepticon")
 # Twitter LLM Bot
 
 Welcome to the Automatic AI-Powered Twitter Bot project! 
