@@ -24,6 +24,6 @@ logging.basicConfig(
 random.seed(time.time())
 
 # Set the timezone globally for the os environment
-os.environ['TZ'] = os.getenv('TZ', 'Etc/GMT+2')
+os.environ['TZ'] = os.getenv('TZ', 'Etc/GMT-2')
 if not sys.platform.startswith('win'):
     time.tzset()
