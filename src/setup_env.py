@@ -1,8 +1,9 @@
 import os
+import sys
+import time
+import random
 import logging
 from dotenv import load_dotenv
-import random
-import time
 
 # Setup environment
 load_dotenv(
@@ -23,5 +24,6 @@ logging.basicConfig(
 random.seed(time.time())
 
 # Set the timezone globally for the os environment
-os.environ['TZ'] = 'Etc/GMT+2' if not os.environ['TZ'] else os.environ['TZ']
-time.tzset()
+os.environ['TZ'] = os.getenv('TZ', 'Etc/GMT+2')
+if not sys.platform.startswith('win'):
+    time.tzset()
