@@ -1,4 +1,6 @@
-![Decepticon](./data/logo.png "Decepticon")
+<div align="center">
+  <img src="./data/logo.png" alt="Logo" title="Decepticon">
+</div>
 # Twitter LLM Bot
 
 Welcome to the Automatic AI-Powered Twitter Bot project! 
