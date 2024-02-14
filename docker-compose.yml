@@ -9,11 +9,14 @@ services:
     depends_on:
       - redis
     environment:
-      - PYTHONUNBUFFERED=1
+      - SERVER_HOST=0.0.0.0
+      - SERVER_PORT=8080
       - REDIS_HOST=redis
-      - REDIS_PORT=6379
+      - REDIS_PORT=6380
+      # - TZ=ETC/GMT+2
+      - PYTHONUNBUFFERED=1
 
   redis:
     image: "redis:alpine"
     ports:
-      - "6379:6379"
+      - "6380:6380"

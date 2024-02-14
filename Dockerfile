@@ -9,6 +9,7 @@ RUN pip install --no-cache-dir -r requirements.txt
 
 EXPOSE 8080
 
+ENV SERVER_HOST "0.0.0.0"
 ENV SERVER_PORT 8080
 ENV PYTHONUNBUFFERED 1
 

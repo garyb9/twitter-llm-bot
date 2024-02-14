@@ -10,7 +10,7 @@ def line_split_formatter(text: str) -> List[str]:
 
     # Removing the leading numbers and unnecessary characters
     formatted = [
-        pattern.sub('"', line.replace('"', '').replace("'", ''))
+        pattern.sub('"', line.replace("\'", "'"))
         for line in items
     ]
 
