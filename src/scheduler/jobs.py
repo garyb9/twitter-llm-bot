@@ -1,6 +1,7 @@
 
 import json
 import logging
+import random
 from typing import Callable
 from llm import openai
 from twitter.twitter_wrapper import TwitterAsyncWrapper
@@ -42,16 +43,20 @@ async def generate_tweets_job(redis_wrapper: RedisClientWrapper):
     formatted_response = formatters.line_split_formatter(
         generated_response
     )
-
+    
     # Pipe an additional formatter to add author
     formatted_response_with_author = formatters.add_author(
         formatted_response, author)
 
+    # Randomly merge both lists
+    formatted_merged = [random.choice([a, b]) for a, b in zip(formatted_response, formatted_response_with_author)] 
+    
     logging.info(
-        f"Tweets generated:\n{json.dumps(formatted_response_with_author, indent=4)}"
+        f"Tweets generated:\n{json.dumps(formatted_merged, indent=4)}"
     )
 
-    await redis_wrapper.fifo_push_list(TWEET_QUEUE, formatted_response_with_author)
+    # Push formatted tweets to Redis
+    await redis_wrapper.fifo_push_list(TWEET_QUEUE, formatted_merged)
 
 
 @job_decorator("post_text_tweet_job")

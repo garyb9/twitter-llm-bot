@@ -107,6 +107,10 @@ The bot will start generating and posting tweets based on the prompts you specif
 ```bash
 sudo docker-compose up
 ```
+Or simply use:
+```bash
+sudo docker-compose up --build
+```
 
 ### Stopping the Bot
 To stop the Twitter bot and any related services running via Docker Compose, run:

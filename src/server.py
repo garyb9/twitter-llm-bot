@@ -12,7 +12,7 @@ from scheduler.scheduler_wrapper import SchedulerWrapper  # Adjusted import
 async def lifespan(app: FastAPI):
     # Startup
     logging.info("Initializing resources")
-
+    
     # Initialize and connect Redis client
     redis_wrapper = RedisClientWrapper()
     await redis_wrapper.connect(

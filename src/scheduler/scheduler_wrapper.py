@@ -20,7 +20,8 @@ class SchedulerWrapper:
         self.scheduler = AsyncIOScheduler()
         self.redis_wrapper = redis_wrapper
         self.initialize_scheduler()
-        logging.info("Scheduler running.")
+        run_times = json.dumps(self.get_jobs_info(), indent=4)
+        logging.info(f"Scheduler running => Jobs running: {run_times}")
 
     def initialize_scheduler(self) -> None:
         # Add the periodic reshuffle job first

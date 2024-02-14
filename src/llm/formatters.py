@@ -8,12 +8,17 @@ def line_split_formatter(text: str) -> List[str]:
     # Compiling a regex pattern to match the leading numbering (e.g., "1. ")
     pattern = re.compile(r'^\d+\.\s*"')
 
-    # Removing the leading numbers and unnecessary characters
-    formatted = [
+    # Removing leading numbers
+    formatted_without_numebrs = [
         pattern.sub('"', line.replace("\'", "'"))
         for line in items
     ]
 
+    # Cleaning quotes
+    formatted = [
+        line.replace("'", "").replace('"', '')
+        for line in formatted_without_numebrs
+    ]
     return formatted
 
 

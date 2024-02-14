@@ -15,8 +15,15 @@ services:
       - REDIS_PORT=6380
       # - TZ=ETC/GMT+2
       - PYTHONUNBUFFERED=1
+      # - ENV=dev
 
   redis:
     image: "redis:alpine"
+    command: --port 6380
     ports:
       - "6380:6380"
+    volumes:
+      - redis-data:/data
+
+volumes:
+  redis-data:
