@@ -16,16 +16,15 @@ DAILY_NUMBER_OF_IMAGE_TWEETS = 2
 
 class SchedulerWrapper:
     def __init__(self, redis_wrapper: RedisClientWrapper):
-        logging.info("Starting scheduler...")
         self.scheduler = AsyncIOScheduler()
         self.redis_wrapper = redis_wrapper
         self.initialize_scheduler()
-        run_times = json.dumps(self.get_jobs_info(), indent=4)
-        logging.info(f"Scheduler running => Jobs running: {run_times}")
+        
 
     def initialize_scheduler(self) -> None:
+        logging.info("Initializing scheduler...")
+        
         # Add the periodic reshuffle job first
-
         self.add_job_to_scheduler(
             self.periodic_scheduler_job_time_reshuffle,
             "periodic_scheduler_job_time_reshuffle",
@@ -46,6 +45,9 @@ class SchedulerWrapper:
             [formatted_run_time],
             self.redis_wrapper
         )
+        
+        run_times = json.dumps(self.get_jobs_info(), indent=4)
+        logging.info(f"Scheduler => Jobs running: {run_times}")
 
     def calculate_run_times(self, num_runs: int) -> list:
         interval = 24 // num_runs
@@ -95,8 +97,8 @@ class SchedulerWrapper:
                 args=args
             )
 
-        logging.info(
-            f"{job_id_base} will run at: \n{json.dumps(times_to_run, indent=2)}")
+        # logging.info(
+        #     f"{job_id_base} will run at: \n{json.dumps(times_to_run, indent=2)}")
 
     def get_jobs_info(self) -> List[str]:
         """
@@ -117,3 +119,5 @@ class SchedulerWrapper:
             except JobLookupError:
                 pass  # Job was already removed or does not exist
         self.init_sheduler_jobs()
+        run_times = json.dumps(self.get_jobs_info(), indent=4)
+        logging.info(f"Scheduler => Jobs running: {run_times}")
