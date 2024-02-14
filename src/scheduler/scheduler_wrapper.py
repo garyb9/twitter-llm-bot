@@ -19,11 +19,20 @@ class SchedulerWrapper:
     def initialize_scheduler(self) -> None:
         logging.info("Initializing scheduler...")
 
-        # Add the periodic reshuffle job first
-        self.add_job_to_scheduler(
-            self.periodic_scheduler_job_time_reshuffle,
-            "periodic_scheduler_job_time_reshuffle",
-            ["00:00"]
+        # Add the periodic jobs first
+        self.scheduler.add_job(
+            self.periodic_job_time_reshuffle,
+            trigger='cron',
+            hour=0,
+            minute=0,
+            id="periodic_job_time_reshuffle",
+        )
+
+        self.scheduler.add_job(
+            self.periodic_job_time_print,
+            trigger='interval',
+            minutes=30,
+            id="periodic_job_time_print",
         )
 
         # Add all other jobs to the scheduler and start
@@ -31,7 +40,8 @@ class SchedulerWrapper:
         self.scheduler.start()
 
         # Add jobs to run immediately
-        run_time = datetime.now() + timedelta(minutes=1)  # run in a minute from now
+        run_time = datetime.now(self.scheduler.timezone) + \
+            timedelta(minutes=1)  # run in a minute from now
         formatted_run_time = run_time.strftime("%H:%M")
 
         self.add_job_to_scheduler(
@@ -41,6 +51,7 @@ class SchedulerWrapper:
             self.redis_wrapper
         )
 
+        # Log times
         run_times = json.dumps(self.get_jobs_info(), indent=4)
         logging.info(f"Scheduler => Jobs running: {run_times}")
 
@@ -100,13 +111,20 @@ class SchedulerWrapper:
         Retrieves information about currently scheduled jobs.
         """
         jobs_info = []
+        now = datetime.now(self.scheduler.timezone)
         for job in self.scheduler.get_jobs():
             run_time = job.next_run_time.strftime(
                 "%H:%M") if job.next_run_time else "None"
-            jobs_info.append(f"{job.id} -> {run_time}")
+            time_until = (job.next_run_time -
+                          now).total_seconds() if job.next_run_time else 0
+            minutes_until = time_until // 60
+            seconds_until = time_until % 60
+            jobs_info.append(
+                f"{job.id} -> {run_time} ({int(minutes_until)}m {int(seconds_until)}s)"
+            )
         return jobs_info
 
-    async def periodic_scheduler_job_time_reshuffle(self) -> None:
+    async def periodic_job_time_reshuffle(self) -> None:
         for job in self.scheduler.get_jobs():
             try:
                 if not job.id.startswith("periodic"):
@@ -116,3 +134,7 @@ class SchedulerWrapper:
         self.init_sheduler_jobs()
         run_times = json.dumps(self.get_jobs_info(), indent=4)
         logging.info(f"Scheduler => Jobs running: {run_times}")
+
+    async def periodic_job_time_print(self) -> None:
+        run_times = json.dumps(self.get_jobs_info()[0:5], indent=4)
+        logging.info(f"Scheduler => Next jobs: {run_times}")
