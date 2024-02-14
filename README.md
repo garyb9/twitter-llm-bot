@@ -118,6 +118,12 @@ To stop the Twitter bot and any related services running via Docker Compose, run
 sudo docker-compose down
 ```
 
+### Flushing Redis through docker-compose
+
+```bash
+sudo docker-compose exec redis redis-cli -p 6380 FLUSHALL
+```
+
 ## Contributing
 If you want to contribute to this project, please follow these steps:
 
