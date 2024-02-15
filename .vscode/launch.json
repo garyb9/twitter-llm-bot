@@ -18,6 +18,14 @@
             "cwd": "${workspaceFolder}"
         },
         {
+            "name": "Python: Tweet generation",
+            "type": "debugpy",
+            "request": "launch",
+            "program": "${workspaceFolder}/scripts/tweet_generation.py",
+            "console": "integratedTerminal",
+            "cwd": "${workspaceFolder}"
+        },
+        {
             "name": "Python: Twitter image post",
             "type": "debugpy",
             "request": "launch",

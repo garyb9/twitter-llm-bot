@@ -4,7 +4,7 @@
       "messages": [
         {
           "role": "system",
-          "content": "I am a quote generating machine. Generate 10 quotes by {name}. No hashtags, no emojis and no name."
+          "content": "I am a quote generating machine. Generate 5 quotes by {name}. No hashtags, no emojis and no name."
         },
         {
           "role": "user",
@@ -21,11 +21,11 @@
       "messages": [
         {
           "role": "system",
-          "content": "Generate 10 tweets about {topic} with a philosophical sense, format each tweet as 2-3 lines, without hashtags and emojis."
+          "content": "I am a philosphy text generating machine. Generate 5 50-200 word texts about {topic}. Format each with a leading number, for example: \"1. text\"."
         },
         {
           "role": "user",
-          "content": "Let's explore the depth of {topic} through philosophical tweets."
+          "content": "Let's explore the depth of {topic} through philosophical short texts."
         }
       ],
       "input_variables": {

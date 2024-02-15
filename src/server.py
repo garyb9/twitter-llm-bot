@@ -4,7 +4,7 @@ from fastapi import FastAPI, Request
 from uvicorn import Config, Server
 from contextlib import asynccontextmanager
 from db.redis_wrapper import RedisClientWrapper
-from scheduler.jobs import TWEET_QUEUE
+from scheduler.scheduler_jobs import TWEET_QUEUE
 from scheduler.scheduler_wrapper import SchedulerWrapper  # Adjusted import
 
 
@@ -12,7 +12,7 @@ from scheduler.scheduler_wrapper import SchedulerWrapper  # Adjusted import
 async def lifespan(app: FastAPI):
     # Startup
     logging.info("Initializing resources")
-    
+
     # Initialize and connect Redis client
     redis_wrapper = RedisClientWrapper()
     await redis_wrapper.connect(

@@ -5,7 +5,7 @@ import consts
 from typing import List
 from datetime import datetime, timedelta
 from db.redis_wrapper import RedisClientWrapper
-import scheduler.jobs as jobs
+import scheduler.scheduler_jobs as scheduler_jobs
 from apscheduler.schedulers.asyncio import AsyncIOScheduler
 from apscheduler.jobstores.base import JobLookupError
 
@@ -45,8 +45,8 @@ class SchedulerWrapper:
         formatted_run_time = run_time.strftime("%H:%M")
 
         self.add_job_to_scheduler(
-            jobs.generate_tweets_job,
-            "generate_tweets_job_init",
+            scheduler_jobs.generate_random_tweets_job,
+            "generate_random_tweets_job_init",
             [formatted_run_time],
             self.redis_wrapper
         )
@@ -70,8 +70,8 @@ class SchedulerWrapper:
         times_to_run = self.calculate_run_times(
             consts.DAILY_NUMBER_OF_TWEET_GENERATIONS)
         self.add_job_to_scheduler(
-            jobs.generate_tweets_job,
-            "generate_tweets_job",
+            scheduler_jobs.generate_random_tweets_job,
+            "generate_random_tweets_job",
             times_to_run,
             self.redis_wrapper
         )
@@ -81,7 +81,7 @@ class SchedulerWrapper:
             consts.DAILY_NUMBER_OF_TEXT_TWEETS)
         times_to_run.sort()
         self.add_job_to_scheduler(
-            jobs.post_text_tweet_job,
+            scheduler_jobs.post_text_tweet_job,
             "post_text_tweet_job",
             times_to_run,
             self.redis_wrapper

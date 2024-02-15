@@ -7,7 +7,7 @@ sys.path.append(
     os.path.abspath(os.path.join(os.path.dirname(__file__), '..', 'src'))
 )
 import setup_env
-from scheduler.jobs import TWEET_QUEUE
+from scheduler.scheduler_jobs import TWEET_QUEUE
 from db.redis_wrapper import RedisClientWrapper
 from twitter.twitter_wrapper import TwitterAsyncWrapper
 
