@@ -4,14 +4,16 @@
 
 # Twitter LLM Bot
 
-Welcome to the Automatic AI-Powered Twitter Bot project! 
-This Python project leverages Hugging Face's LLM (Large Language Model) technology and Langchain to create an automatic Twitter bot that generates contextual content. 
+Welcome to the Automatic AI-Powered Twitter Bot project!
+This Python project leverages Hugging Face's LLM (Large Language Model) technology and Langchain to create an automatic Twitter bot that generates contextual content.
 This README file will guide you through setting up, configuring, and using this Twitter bot.
 
 ## Getting Started
+
 Before you start exploring and experimenting with the Transformer architecture, you'll need to set up your environment. Here's how to get started:
 
 ## Prerequisites
+
 Before you begin, ensure you have the following prerequisites:
 
 - Python 3.11 or higher
@@ -22,6 +24,7 @@ Before you begin, ensure you have the following prerequisites:
 ## Installation
 
 ### Project
+
 Clone this repository to your local machine:
 
 ```bash
@@ -40,12 +43,14 @@ source venv/bin/activate  # On Windows, use 'venv\Scripts\activate'
 # Install project dependencies
 pip install -r requirements.txt
 ```
+
 ### Redis
+
 Follow this page for downloading & installation steps:
 [Redis](https://redis.io/docs/install/install-redis/)
 
-
 ## Configuration
+
 Before you can use the Twitter bot, you need to set up the necessary configuration. Create a .env file in the project root directory with the following content:
 
 ```.env
@@ -79,11 +84,13 @@ PONG
 ```
 
 To run the Twitter bot, execute the following command:
+
 ```bash
 python ./src/main.py
 ```
 
 Test project using:
+
 ```bash
 pytest
 or
@@ -95,6 +102,7 @@ python -m pytest
 To simplify the setup and ensure a consistent environment for development and production, this project supports Docker. Follow the steps below to get the Twitter bot running inside a Docker container using Docker Compose.
 
 ### Docker Prerequisites
+
 - Docker installed on your machine. Installation guides for Docker can be found at [Docker's official website](https://docs.docker.com/get-docker/).
 - Docker Compose installed on your machine (for Docker Desktop users, it's included). Check the installation guide at [Docker Compose's official website](https://docs.docker.com/compose/install/).
 
@@ -107,17 +115,23 @@ sudo docker-compose build
 ```
 
 ### Running the Bot with Docker Compose
+
 The bot will start generating and posting tweets based on the prompts you specify in the code. You can customize the bot's behavior by modifying the prompts.
+
 ```bash
 sudo docker-compose up
 ```
+
 Or simply use:
+
 ```bash
 sudo docker-compose up --build
 ```
 
 ### Stopping the Bot
+
 To stop the Twitter bot and any related services running via Docker Compose, run:
+
 ```bash
 sudo docker-compose down
 ```
@@ -129,6 +143,7 @@ sudo docker-compose exec redis redis-cli -p 6380 FLUSHALL
 ```
 
 ## Contributing
+
 If you want to contribute to this project, please follow these steps:
 
 1. Fork the repository on GitHub.
@@ -139,6 +154,7 @@ If you want to contribute to this project, please follow these steps:
 Contributions are welcome!
 
 ## License
+
 This project is licensed under the MIT License - see the LICENSE file for details.
 
 Feel free to contact us if you have any questions or encounter issues while using this Twitter bot. Happy tweeting!
