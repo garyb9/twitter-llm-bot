@@ -1,0 +1,39 @@
+name: Lint, Test and Docker CI
+
+on:
+  push:
+    branches: [ "main" ]
+  pull_request:
+    branches: [ "main" ]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        python-version: ["3.11"]
+    steps:
+    # Checkout
+    - uses: actions/checkout@v3
+
+    # Run PyLint
+    - name: Set up Python ${{ matrix.python-version }}
+      uses: actions/setup-python@v3
+      with:
+        python-version: ${{ matrix.python-version }}
+    - name: Install dependencies
+      run: |
+        python -m pip install --upgrade pip
+        pip install pylint
+    - name: Analysing the code with pylint
+      run: |
+        pylint $(git ls-files '*.py')
+        
+    # Run pytest within the Docker environment
+    - name: Run pytest
+      run: docker-compose run your-service-name pytest
+    
+    # Build the Docker image using docker compose
+    - name: Build Docker image with Docker Compose
+      run: docker-compose build
+
