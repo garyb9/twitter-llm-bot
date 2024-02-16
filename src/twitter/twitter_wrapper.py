@@ -12,9 +12,9 @@ class TwitterAsyncWrapper:
         available in Twitter API v2, like posting tweets.
         """
 
-        consumer_key = (os.getenv("TWITTER_API_KEY", ""),)
-        consumer_secret = (os.getenv("TWITTER_API_KEY_SECRET", ""),)
-        access_token = (os.getenv("TWITTER_ACCESS_TOKEN", ""),)
+        consumer_key = os.getenv("TWITTER_API_KEY", "")
+        consumer_secret = os.getenv("TWITTER_API_KEY_SECRET", "")
+        access_token = os.getenv("TWITTER_ACCESS_TOKEN", "")
         access_token_secret = os.getenv("TWITTER_ACCESS_TOKEN_SECRET", "")
 
         # Twitter API v1.1 (synchronous) for media upload
