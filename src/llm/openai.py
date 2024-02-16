@@ -5,8 +5,8 @@ from openai import AsyncOpenAI
 from io import BytesIO
 from base64 import decodebytes
 
-openai_api_key = os.getenv("OPENAI_API_KEY")
-openai_organization = os.getenv("OPENAI_ORG_ID")
+openai_api_key = os.getenv("OPENAI_API_KEY", "")
+openai_organization = os.getenv("OPENAI_ORG_ID", "")
 
 headers = {
     "Authorization": f"Bearer {openai_api_key}",
