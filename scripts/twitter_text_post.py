@@ -1,4 +1,5 @@
 import os
+import random
 import sys
 import asyncio
 import logging
@@ -8,15 +9,14 @@ sys.path.append(
 )
 import setup_env
 from twitter.twitter_wrapper import TwitterAsyncWrapper
+from tweet_generation import tweet_generation_philosophical
 
 
 async def main() -> None:
     tw = TwitterAsyncWrapper()
-    tweet_text = """
-Adversity is a blessing in disguise.
-
-Use it to your advantage.
-    """
+    generated_tweets = await tweet_generation_philosophical()
+    tweet_text = random.choice(generated_tweets)
+    logging.info(tweet_text)
     response = await tw.post_text_tweet(tweet_text)
     logging.info(response)
 
