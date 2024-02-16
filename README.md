@@ -74,7 +74,8 @@ Please refer to [Hugging Face cache setup](https://huggingface.co/docs/transform
 
 ## Usage
 
-Connect to Redis
+### Connect to Redis
+
 You can test that your Redis server is running by connecting with the Redis CLI:
 
 ```bash
@@ -83,13 +84,15 @@ localhost:6379> ping
 PONG
 ```
 
-To run the Twitter bot, execute the following command:
+### Run bot directly
 
 ```bash
 python ./src/main.py
 ```
 
-Test project using:
+## Development Setup
+
+### Test project
 
 ```bash
 pytest
@@ -97,11 +100,19 @@ or
 python -m pytest
 ```
 
-Linter:
+### Pre-commit Hooks Installation
 
-```bash
-pylint *.py
-```
+1. Install the pre-commit package:
+
+    ```bash
+    pip install pre-commit
+    ```
+
+2. Navigate to the project's root directory and install the git hook scripts:
+
+    ```bash
+    pre-commit install
+    ```
 
 ## Docker Setup
 
