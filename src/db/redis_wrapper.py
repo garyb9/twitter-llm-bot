@@ -2,6 +2,7 @@ import logging
 import subprocess
 from typing import Optional
 import redis.asyncio as redis
+from consts import TWEET_QUEUE
 
 
 class RedisClientWrapper:
@@ -53,7 +54,7 @@ class RedisClientWrapper:
         return result[1].decode("utf-8") if result else None
 
     async def fifo_peek(
-        self, name: str = "default_queue", start: int = 0, end: int = -1
+        self, name: str = TWEET_QUEUE, start: int = 0, end: int = -1
     ) -> list:
         """
         Peek at messages in a FIFO queue without removing them.
@@ -62,7 +63,7 @@ class RedisClientWrapper:
         messages = await self.client.lrange(name, start, end)
         return [message.decode("utf-8") for message in messages]
 
-    async def fifo_item_count(self, name: str = "default_queue") -> int:
+    async def fifo_item_count(self, name: str = TWEET_QUEUE) -> int:
         """
         Count how many items are in FIFO queue.
         """
