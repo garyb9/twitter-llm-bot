@@ -135,6 +135,8 @@ class SchedulerWrapper:
         run_times = json.dumps(self.get_jobs_info(), indent=4)
         logging.info(f"Scheduler => Jobs running: {run_times}")
 
-    async def periodic_job_time_print(self) -> None:
-        run_times = json.dumps(self.get_jobs_info()[0:5], indent=4)
+    async def periodic_job_time_print(self, cap: int = 5) -> None:
+        jobs = self.get_jobs_info()
+        jobs_filtered = [job for job in jobs if not job.startswith("periodic")]
+        run_times = json.dumps(jobs_filtered[0:cap], indent=4)
         logging.info(f"Scheduler => Next jobs: {run_times}")
