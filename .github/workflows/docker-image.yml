@@ -1,0 +1,26 @@
+name: Docker Image CI
+
+on:
+  push:
+    branches: [ "main" ]
+  pull_request:
+    branches: [ "main" ]
+
+jobs:
+
+  build:
+
+    runs-on: ubuntu-latest
+
+    steps:
+    # Checkout
+    - uses: actions/checkout@v3
+
+    # Run pytest within the Docker environment
+    - name: Run pytest
+      run: docker-compose run your-service-name pytest
+    
+    # Build the Docker image using docker compose
+    - name: Build Docker image with Docker Compose
+      run: docker-compose build
+    
