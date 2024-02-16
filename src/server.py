@@ -1,3 +1,4 @@
+import json
 import os
 import logging
 from fastapi import FastAPI, Request
@@ -90,4 +91,6 @@ async def list_scheduled_jobs(request: Request):
     """
     scheduler_wrapper: SchedulerWrapper = request.app.state.scheduler_wrapper
     jobs_info = scheduler_wrapper.get_jobs_info()
+    run_times = json.dumps(jobs_info, indent=4)
+    logging.info(f"Scheduler => Jobs running: {run_times}")
     return jobs_info
