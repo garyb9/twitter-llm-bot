@@ -12,22 +12,27 @@ class TwitterAsyncWrapper:
         available in Twitter API v2, like posting tweets.
         """
 
+        consumer_key = (os.getenv("TWITTER_API_KEY", ""),)
+        consumer_secret = (os.getenv("TWITTER_API_KEY_SECRET", ""),)
+        access_token = (os.getenv("TWITTER_ACCESS_TOKEN", ""),)
+        access_token_secret = os.getenv("TWITTER_ACCESS_TOKEN_SECRET", "")
+
         # Twitter API v1.1 (synchronous) for media upload
         self.client = API(
             auth=OAuthHandler(
-                consumer_key=os.getenv("TWITTER_API_KEY"),
-                consumer_secret=os.getenv("TWITTER_API_KEY_SECRET"),
-                access_token=os.getenv("TWITTER_ACCESS_TOKEN"),
-                access_token_secret=os.getenv("TWITTER_ACCESS_TOKEN_SECRET"),
+                consumer_key=consumer_key,
+                consumer_secret=consumer_secret,
+                access_token=access_token,
+                access_token_secret=access_token_secret,
             )
         )
 
         # Twitter API v2 (asynchronous) for tweeting
         self.async_client = asynchronous.AsyncClient(
-            consumer_key=os.getenv("TWITTER_API_KEY"),
-            consumer_secret=os.getenv("TWITTER_API_KEY_SECRET"),
-            access_token=os.getenv("TWITTER_ACCESS_TOKEN"),
-            access_token_secret=os.getenv("TWITTER_ACCESS_TOKEN_SECRET"),
+            consumer_key=consumer_key,
+            consumer_secret=consumer_secret,
+            access_token=access_token,
+            access_token_secret=access_token_secret,
         )
 
     async def post_text_tweet(self, text: str) -> any:
