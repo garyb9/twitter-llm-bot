@@ -59,6 +59,13 @@ class RedisClientWrapper:
         messages = await self.client.lrange(name, start, end)
         return [message.decode("utf-8") for message in messages]
 
+    async def fifo_item_count(self, name: str = "default_queue") -> int:
+        """
+        Count how many items are in FIFO queue.
+        """
+        self.ensure_client_initialized()
+        return await self.client.llen(name)
+
     async def fifo_clear(self, name: str) -> None:
         """
         Clear all messages from a specified FIFO queue.

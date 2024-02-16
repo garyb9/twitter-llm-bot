@@ -23,9 +23,10 @@ async def test_generate_random_tweets_job(mocker):
         return_value=(["Test prompt"], "name"),
         autospec=True
     )
+    generate_text_ret_val = "\"Random Tweet 1\"\n\"Random Tweet 2\"\n\"Random Tweet 3\"\n\"Random Tweet 4\"\n\"Random Tweet 5\""
     mocker.patch(
         "llm.openai.generate_text_async",
-        return_value="\"Random Tweet 1\"\n\"Random Tweet 2\""
+        return_value=generate_text_ret_val
     )
 
     await scheduler_jobs.generate_random_tweets_job(mock_redis)

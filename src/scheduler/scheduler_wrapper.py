@@ -48,7 +48,8 @@ class SchedulerWrapper:
             scheduler_jobs.generate_random_tweets_job,
             "generate_random_tweets_job_init",
             [formatted_run_time],
-            self.redis_wrapper
+            self.redis_wrapper,
+            True,
         )
 
         # Log times
