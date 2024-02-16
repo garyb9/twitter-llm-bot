@@ -1,7 +1,9 @@
 import sys
 import logging
 import asyncio
-import setup_env
+from setup_env import setup
+
+setup()
 from server import run_server
 
 

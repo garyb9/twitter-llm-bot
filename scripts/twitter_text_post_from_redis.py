@@ -2,10 +2,11 @@ import os
 import sys
 import asyncio
 import logging
-import json
 
 sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), "..", "src")))
-import setup_env
+from setup_env import setup
+
+setup()
 from scheduler.scheduler_jobs import TWEET_QUEUE
 from db.redis_wrapper import RedisClientWrapper
 from twitter.twitter_wrapper import TwitterAsyncWrapper

@@ -1,10 +1,11 @@
-import random
 import pytest
-import setup_env
+from setup_env import setup
+
+setup()
 import scheduler.scheduler_jobs as scheduler_jobs
 from db.redis_wrapper import RedisClientWrapper
 import llm.formatters as formatters
-from unittest.mock import patch, ANY
+from unittest.mock import ANY
 import consts
 
 

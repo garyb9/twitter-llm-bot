@@ -6,7 +6,9 @@ import logging
 import json
 
 sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), "..", "src")))
-import setup_env
+from setup_env import setup
+
+setup()
 from typing import List
 from llm import prompts
 import llm.openai as openai

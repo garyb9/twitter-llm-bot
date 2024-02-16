@@ -136,7 +136,7 @@ async def post_text_tweet_job(redis_wrapper: RedisClientWrapper):
         else:
             logging.info(f"Posted tweet response: {response}")
     else:
-        logging.warning(f"Tweet queue is empty.")
+        logging.warning("Tweet queue is empty.")
 
 
 @job_decorator("post_image_tweet_job")
@@ -151,4 +151,4 @@ async def post_image_tweet_job(redis_wrapper: RedisClientWrapper):
         else:
             logging.info(f"Posted tweet response: {response}")
     else:
-        logging.warning(f"Image queue is empty.")
+        logging.warning("Image queue is empty.")

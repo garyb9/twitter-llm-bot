@@ -3,10 +3,11 @@ import random
 import sys
 import asyncio
 import logging
-import json
 
 sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), "..", "src")))
-import setup_env
+from setup_env import setup
+
+setup()
 from twitter.twitter_wrapper import TwitterAsyncWrapper
 from tweet_generation import tweet_generation_philosophical
 

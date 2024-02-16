@@ -1,5 +1,7 @@
 import pytest
-import setup_env
+from setup_env import setup
+
+setup()
 from llm.openai import generate_text_async
 from llm.prompts import prepare_prompt_for_text_model
 

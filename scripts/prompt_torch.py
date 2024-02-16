@@ -1,5 +1,6 @@
-import setup_env
-import logging
+from setup_env import setup
+
+setup()
 import torch
 from hf_models.model_loader import ModelLoader
 from transformers import AutoTokenizer, AutoModelForSeq2SeqLM

@@ -1,0 +1,6 @@
+[flake8]
+ignore = E402, E501, W503, W504, W291
+max-line-length = 120
+exclude = 
+    migrations,
+    __pycache__,

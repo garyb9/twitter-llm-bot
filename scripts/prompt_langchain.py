@@ -1,4 +1,6 @@
-import setup_env
+from setup_env import setup
+
+setup()
 import logging
 from hf_models.model_loader import ModelLoader
 from langchain.llms import HuggingFacePipeline

@@ -1,11 +1,12 @@
 import os
-import cv2
 import sys
 import asyncio
 import logging
 
 sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), "..", "src")))
-import setup_env
+from setup_env import setup
+
+setup()
 from images.image_utils import add_text_to_image
 from PIL import Image
 

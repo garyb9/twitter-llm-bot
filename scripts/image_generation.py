@@ -2,11 +2,11 @@ import os
 import sys
 import asyncio
 import logging
-import json
 
 sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), "..", "src")))
-import setup_env
-from typing import List
+from setup_env import setup
+
+setup()
 import llm.openai as openai
 from tweet_generation import tweet_generation
 

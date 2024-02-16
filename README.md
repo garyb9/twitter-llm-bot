@@ -102,6 +102,18 @@ or
 python -m pytest
 ```
 
+### Using Black for code quality fixes
+
+```bash
+black .
+```
+
+### Lint Project
+
+```bash
+flake8 .
+```
+
 ### Pre-commit Hooks Installation
 
 1. Install the pre-commit package:

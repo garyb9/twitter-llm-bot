@@ -1,4 +1,3 @@
-import os
 import cv2
 from PIL import Image, ImageDraw, ImageFont, ImageFilter
 import textwrap

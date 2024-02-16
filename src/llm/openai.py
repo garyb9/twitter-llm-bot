@@ -1,5 +1,5 @@
 import os
-from typing import Callable, List, Union
+from typing import List, Union
 from PIL import Image
 from openai import AsyncOpenAI
 from io import BytesIO

@@ -2,7 +2,7 @@ import os
 import json
 import logging
 import subprocess
-from transformers import pipeline, AutoTokenizer, AutoModelForSeq2SeqLM
+from transformers import AutoTokenizer, AutoModelForSeq2SeqLM
 
 
 class ModelLoader:
@@ -38,7 +38,7 @@ class ModelLoader:
         logging.info(f"Models configured: {json.dumps(self.models, indent=4)}")
 
     def download_models_pretrained(self):
-        logging.info(f"Downloading Models from config file")
+        logging.info("Downloading Models from config file")
         for name, details in self.models.items():
             try:
                 directory = details["directory"]
@@ -55,12 +55,12 @@ class ModelLoader:
                     tokenizer.save_pretrained(directory)
                     logging.info(f"{name} downloaded.")
             except subprocess.CalledProcessError as e:
-                logging.info(f"Error getting model: {name}")
+                logging.info(f"Error getting model: {name} -> {e}")
 
-        logging.info(f"Done loading models")
+        logging.info("Done loading models")
 
     def download_models_git(self):
-        logging.info(f"Downloading Models from config file")
+        logging.info("Downloading Models from config file")
         for name, details in self.models.items():
             try:
                 directory = details["directory"]
@@ -92,4 +92,4 @@ class ModelLoader:
 
             except subprocess.CalledProcessError as e:
                 logging.info(f"Error getting model {name}: {e}")
-        logging.info(f"Done loading models")
+        logging.info("Done loading models")
