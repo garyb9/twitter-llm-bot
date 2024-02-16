@@ -4,6 +4,8 @@
 
 # Twitter LLM Bot
 
+![Python Test](https://github.com/garyb9/twitter-llm-bot/actions/workflows/cicd.yml/badge.svg)
+
 Welcome to the Automatic AI-Powered Twitter Bot project!
 This Python project leverages Hugging Face's LLM (Large Language Model) technology and Langchain to create an automatic Twitter bot that generates contextual content.
 This README file will guide you through setting up, configuring, and using this Twitter bot.
