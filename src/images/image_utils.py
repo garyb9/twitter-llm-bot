@@ -12,13 +12,13 @@ def add_text_to_image(
     image_path,
     save_path,
     text,
-    font_path='arial.ttf',
+    font_path="arial.ttf",
     relative_font_size=0.04,
     vertical_position=0.10,
-    line_spacing=1.0
+    line_spacing=1.0,
 ):
     """
-    Adds wrapped text to an image with optional outline for improved legibility, 
+    Adds wrapped text to an image with optional outline for improved legibility,
     supports custom font and adjusts font size relative to image width.
 
     Parameters:
@@ -44,21 +44,26 @@ def add_text_to_image(
     max_width = image_width - 2 * padding
 
     # Estimate the average character width at this font size and calculate wrap width
-    avg_char_width = sum(font.getsize(char)[
-                         0] for char in 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ') / 52
+    avg_char_width = (
+        sum(
+            font.getsize(char)[0]
+            for char in "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ"
+        )
+        / 52
+    )
 
     # Ensure wrap_width is at least 1
     wrap_width = max(1, int(max_width / avg_char_width))
 
     # Split the original text into paragraphs
-    paragraphs = text.split('\n')
+    paragraphs = text.split("\n")
 
     # Wrap each paragraph and get lines
     lines = []
     for paragraph in paragraphs:
         # Adjust width based on the font size and image width
         wrapped_paragraph = textwrap.fill(paragraph, width=wrap_width)
-        lines.extend(wrapped_paragraph.split('\n'))
+        lines.extend(wrapped_paragraph.split("\n"))
 
     # Calculate the starting y position based on the vertical_position parameter
     total_text_height = (font.getsize(lines[0])[1] + line_spacing) * len(lines)
@@ -77,7 +82,14 @@ def add_text_to_image(
         # draw.text((x_position, y_position), line,
         #           font=font, fill=contrast_color)
         draw_text_with_outline(
-            draw, line, (x_position, y_position), font, contrast_color, opposite_color, outline_width)
+            draw,
+            line,
+            (x_position, y_position),
+            font,
+            contrast_color,
+            opposite_color,
+            outline_width,
+        )
         y_position += line_height + line_spacing  # Adjust line spacing if necessary
 
     # Save the modified image
@@ -88,12 +100,12 @@ def add_text_to_image_with_outline(
     image_path,
     save_path,
     text,
-    font_path='arial.ttf',
+    font_path="arial.ttf",
     color="white",
     relative_font_size=0.04,
     vertical_position=0.15,
     outline_color="black",
-    outline_width=1
+    outline_width=1,
 ):
     """
     Add text to an image with specified font and color.
@@ -123,8 +135,13 @@ def add_text_to_image_with_outline(
     max_width = image_width - 2 * padding
 
     # Estimate the average character width at this font size and calculate wrap width
-    avg_char_width = sum(font.getsize(char)[
-                         0] for char in 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ') / 52
+    avg_char_width = (
+        sum(
+            font.getsize(char)[0]
+            for char in "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ"
+        )
+        / 52
+    )
     # Ensure wrap_width is at least 1
     wrap_width = max(1, int(max_width / avg_char_width))
 
@@ -132,9 +149,10 @@ def add_text_to_image_with_outline(
     wrapped_text = textwrap.fill(text, width=wrap_width)
 
     # Split the wrapped text into lines to calculate the total text height
-    lines = wrapped_text.split('\n')
-    text_height = sum([font.getsize(line)[1]
-                      for line in lines]) + padding * (len(lines) - 1)
+    lines = wrapped_text.split("\n")
+    text_height = sum([font.getsize(line)[1] for line in lines]) + padding * (
+        len(lines) - 1
+    )
 
     # Calculate the starting y position based on the vertical_position parameter
     y_position = image_height * vertical_position - text_height / 2
@@ -147,7 +165,14 @@ def add_text_to_image_with_outline(
         # draw.text((x_position, y_position), line,
         #           font=font, fill=color)
         draw_text_with_outline(
-            draw, line, (x_position, y_position), font, color, outline_color, outline_width)
+            draw,
+            line,
+            (x_position, y_position),
+            font,
+            color,
+            outline_color,
+            outline_width,
+        )
 
         # Move to the next line, adding padding between lines
         y_position += line_height + padding
@@ -170,7 +195,8 @@ def get_binary_contrast_color(image_path):
 
     # Calculate the grayscale equivalent of the average color
     grayscale = int(
-        0.299 * average_color[0] + 0.587 * average_color[1] + 0.114 * average_color[2])
+        0.299 * average_color[0] + 0.587 * average_color[1] + 0.114 * average_color[2]
+    )
 
     # Determine if the grayscale equivalent is closer to black or white
     # and then choose the opposite color. A common threshold is 128 (the middle of 0-255).
@@ -186,7 +212,9 @@ def get_opposite_color(color_tuple):
     return opposite_color
 
 
-def draw_text_with_outline(draw, text, position, font, text_color, outline_color, outline_width):
+def draw_text_with_outline(
+    draw, text, position, font, text_color, outline_color, outline_width
+):
     x, y = position
     # Draw outline in all directions
     for i in range(-outline_width, outline_width + 1):
@@ -197,26 +225,31 @@ def draw_text_with_outline(draw, text, position, font, text_color, outline_color
     draw.text(position, text, font=font, fill=text_color)
 
 
-def draw_text_with_thin_outline(draw, text, position, font, text_color, outline_color, outline_width):
+def draw_text_with_thin_outline(
+    draw, text, position, font, text_color, outline_color, outline_width
+):
     x, y = position
 
     # Create a temporary image for drawing the outline
-    temp_image = Image.new('RGBA', draw.im.size, (0, 0, 0, 0))
+    temp_image = Image.new("RGBA", draw.im.size, (0, 0, 0, 0))
     temp_draw = ImageDraw.Draw(temp_image)
 
     # Draw text outline by drawing the text in the outline color, slightly larger than the text itself
-    temp_draw.text((x - outline_width, y - outline_width),
-                   text, font=font, fill=outline_color)
-    temp_draw.text((x + outline_width, y - outline_width),
-                   text, font=font, fill=outline_color)
-    temp_draw.text((x - outline_width, y + outline_width),
-                   text, font=font, fill=outline_color)
-    temp_draw.text((x + outline_width, y + outline_width),
-                   text, font=font, fill=outline_color)
+    temp_draw.text(
+        (x - outline_width, y - outline_width), text, font=font, fill=outline_color
+    )
+    temp_draw.text(
+        (x + outline_width, y - outline_width), text, font=font, fill=outline_color
+    )
+    temp_draw.text(
+        (x - outline_width, y + outline_width), text, font=font, fill=outline_color
+    )
+    temp_draw.text(
+        (x + outline_width, y + outline_width), text, font=font, fill=outline_color
+    )
 
     # Blur the temporary image to create a thin outline effect
-    temp_image = temp_image.filter(
-        ImageFilter.GaussianBlur(radius=outline_width))
+    temp_image = temp_image.filter(ImageFilter.GaussianBlur(radius=outline_width))
 
     # Paste the blurred outline onto the original image
     draw.im.paste(temp_image, (0, 0), temp_image)
@@ -227,7 +260,7 @@ def draw_text_with_thin_outline(draw, text, position, font, text_color, outline_
 
 def resize_to_aspect(image_path, save_path, target_resolution=(1080, 1920)):
     """
-    Resizes an image to fit within a target resolution, 
+    Resizes an image to fit within a target resolution,
     maintaining the original aspect ratio.
 
     Parameters:
@@ -313,11 +346,12 @@ def extend_image_upwards(image_path, save_path, extension_percentage=10):
 
     # Resize (stretch) the selected top portion to the additional height
     stretched_portion = top_portion.resize(
-        (image_width, additional_height), Image.LANCZOS)
+        (image_width, additional_height), Image.LANCZOS
+    )
 
     # Create a new blank image with the same width and the increased height
     new_height = image_height + additional_height
-    new_image = Image.new('RGB', (image_width, new_height), (255, 255, 255))
+    new_image = Image.new("RGB", (image_width, new_height), (255, 255, 255))
 
     # Paste the stretched portion to the top of the new image
     new_image.paste(stretched_portion, (0, 0))
@@ -339,7 +373,7 @@ def add_text_to_image_cv2(image_path, save_path, text):
     # Define the font, size, and thickness
     font = cv2.FONT_HERSHEY_SIMPLEX
     font_scale = 1  # Adjust as needed
-    thickness = 2   # Adjust as needed
+    thickness = 2  # Adjust as needed
     color = (255, 255, 255)  # White color
 
     # Get the text size
@@ -350,8 +384,9 @@ def add_text_to_image_cv2(image_path, save_path, text):
     text_y = int(height * 0.05) + text_size[1]
 
     # Add text to image
-    cv2.putText(image, text, (text_x, text_y), font,
-                font_scale, color, thickness, cv2.LINE_AA)
+    cv2.putText(
+        image, text, (text_x, text_y), font, font_scale, color, thickness, cv2.LINE_AA
+    )
 
     # Save the edited image
     cv2.imwrite(save_path, image)

@@ -1,4 +1,3 @@
-
 import os
 import random
 import sys
@@ -6,9 +5,7 @@ import asyncio
 import logging
 import json
 
-sys.path.append(
-    os.path.abspath(os.path.join(os.path.dirname(__file__), '..', 'src'))
-)
+sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), "..", "src")))
 import setup_env
 from typing import List
 from llm import prompts
@@ -26,28 +23,24 @@ async def tweet_generation_quotes() -> List[str]:
     )
 
     # Clean generated content
-    formatted_response = formatters.line_split_formatter(
-        generated_response
-    )
+    formatted_response = formatters.line_split_formatter(generated_response)
 
     # Pipe an additional formatter to add author
-    formatted_response_with_author = formatters.add_author(
-        formatted_response, author)
+    formatted_response_with_author = formatters.add_author(formatted_response, author)
 
     # Randomly merge both lists
-    formatted_merged = [random.choice([a, b]) for a, b in zip(
-        formatted_response, formatted_response_with_author)]
+    formatted_merged = [
+        random.choice([a, b])
+        for a, b in zip(formatted_response, formatted_response_with_author)
+    ]
 
-    logging.info(
-        f"Tweets generated:\n{json.dumps(formatted_merged, indent=4)}"
-    )
+    logging.info(f"Tweets generated:\n{json.dumps(formatted_merged, indent=4)}")
 
     return formatted_merged
 
 
 async def tweet_generation_philosophical() -> List[str]:
-    messages, var = prompts.prepare_prompt_for_text_model(
-        "philosophical_tweets")
+    messages, var = prompts.prepare_prompt_for_text_model("philosophical_tweets")
 
     generated_response = await openai.generate_text_async(
         messages,
@@ -56,19 +49,16 @@ async def tweet_generation_philosophical() -> List[str]:
     )
 
     # Clean generated content
-    formatted_response = formatters.line_split_formatter(
-        generated_response
-    )
+    formatted_response = formatters.line_split_formatter(generated_response)
 
-    formatted_response_with_depth = formatters.add_newlines(
-        formatted_response
-    )
+    formatted_response_with_depth = formatters.add_newlines(formatted_response)
 
     logging.info(
         f"Tweets generated:\n{json.dumps(formatted_response_with_depth, indent=4)}"
     )
 
     return formatted_response_with_depth
+
 
 # Run
 if __name__ == "__main__":

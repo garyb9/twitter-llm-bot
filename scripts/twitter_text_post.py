@@ -4,9 +4,8 @@ import sys
 import asyncio
 import logging
 import json
-sys.path.append(
-    os.path.abspath(os.path.join(os.path.dirname(__file__), '..', 'src'))
-)
+
+sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), "..", "src")))
 import setup_env
 from twitter.twitter_wrapper import TwitterAsyncWrapper
 from tweet_generation import tweet_generation_philosophical
@@ -19,6 +18,7 @@ async def main() -> None:
     logging.info(tweet_text)
     response = await tw.post_text_tweet(tweet_text)
     logging.info(response)
+
 
 # Run
 if __name__ == "__main__":

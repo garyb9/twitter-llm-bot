@@ -6,13 +6,14 @@ import logging
 from typing import List, Tuple
 
 # Load prompts configuration
-prompts_config_chat_path = os.path.abspath(os.path.join(
-    os.path.dirname(__file__), '../../data/prompts_config_chat.json'))
+prompts_config_chat_path = os.path.abspath(
+    os.path.join(os.path.dirname(__file__), "../../data/prompts_config_chat.json")
+)
 
-with open(prompts_config_chat_path, 'r') as file:
+with open(prompts_config_chat_path, "r") as file:
     prompts_config_chat = json.load(file)
 
-with open(prompts_config_chat_path.replace('chat', 'dalle3'), 'r') as file:
+with open(prompts_config_chat_path.replace("chat", "dalle3"), "r") as file:
     prompts_config_image = json.load(file)
 
 
@@ -25,24 +26,24 @@ def prepare_prompt_for_text_model(category: str = None) -> Tuple[List[str], str]
             category = random.choice(list(prompts_config_chat.keys()))
 
         prompt_config = random.choice(prompts_config_chat[category])
-        messages = prompt_config['messages']
+        messages = prompt_config["messages"]
 
         # if 'input_variables' in prompt_config:
         input_variables = {
             var_name: random.choice(values)
-            for var_name, values in prompt_config['input_variables'].items()
+            for var_name, values in prompt_config["input_variables"].items()
         }
 
         for message in messages:
-            message['content'] = message['content'].format(
-                **input_variables)
+            message["content"] = message["content"].format(**input_variables)
 
         var = next(iter(input_variables.values()))
 
         return messages, var
     except Exception as e:
         logging.error(
-            f"An unexpected error occurred during prompt preparation for chat: {e}")
+            f"An unexpected error occurred during prompt preparation for chat: {e}"
+        )
         raise
 
 
@@ -53,13 +54,12 @@ def prepare_prompt_for_image_model(chosen_var: str = None) -> List[str]:
     """
     try:
         prompt_config = random.choice(prompts_config_image)
-        message = prompt_config['message']
+        message = prompt_config["message"]
 
-        if 'input_variables' in prompt_config:
+        if "input_variables" in prompt_config:
             input_variables = {
-                var_name: (random.choice(values)
-                           if not chosen_var else chosen_var)
-                for var_name, values in prompt_config['input_variables'].items()
+                var_name: (random.choice(values) if not chosen_var else chosen_var)
+                for var_name, values in prompt_config["input_variables"].items()
             }
 
             message = message.format(**input_variables)
@@ -67,5 +67,6 @@ def prepare_prompt_for_image_model(chosen_var: str = None) -> List[str]:
         return message
     except Exception as e:
         logging.error(
-            f"An unexpected error occurred during prompt preparation for image: {e}")
+            f"An unexpected error occurred during prompt preparation for image: {e}"
+        )
         raise

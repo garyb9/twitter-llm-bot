@@ -7,27 +7,27 @@ class TwitterAsyncWrapper:
         """
         Initialize the Twitter wrapper with both synchronous and asynchronous clients.
 
-        The synchronous client (self.client) is used for operations not supported in Twitter API v2, 
-        like media uploads. The asynchronous client (self.async_client) is used for operations 
+        The synchronous client (self.client) is used for operations not supported in Twitter API v2,
+        like media uploads. The asynchronous client (self.async_client) is used for operations
         available in Twitter API v2, like posting tweets.
         """
 
         # Twitter API v1.1 (synchronous) for media upload
         self.client = API(
             auth=OAuthHandler(
-                consumer_key=os.getenv('TWITTER_API_KEY'),
-                consumer_secret=os.getenv('TWITTER_API_KEY_SECRET'),
-                access_token=os.getenv('TWITTER_ACCESS_TOKEN'),
-                access_token_secret=os.getenv('TWITTER_ACCESS_TOKEN_SECRET')
+                consumer_key=os.getenv("TWITTER_API_KEY"),
+                consumer_secret=os.getenv("TWITTER_API_KEY_SECRET"),
+                access_token=os.getenv("TWITTER_ACCESS_TOKEN"),
+                access_token_secret=os.getenv("TWITTER_ACCESS_TOKEN_SECRET"),
             )
         )
 
         # Twitter API v2 (asynchronous) for tweeting
         self.async_client = asynchronous.AsyncClient(
-            consumer_key=os.getenv('TWITTER_API_KEY'),
-            consumer_secret=os.getenv('TWITTER_API_KEY_SECRET'),
-            access_token=os.getenv('TWITTER_ACCESS_TOKEN'),
-            access_token_secret=os.getenv('TWITTER_ACCESS_TOKEN_SECRET')
+            consumer_key=os.getenv("TWITTER_API_KEY"),
+            consumer_secret=os.getenv("TWITTER_API_KEY_SECRET"),
+            access_token=os.getenv("TWITTER_ACCESS_TOKEN"),
+            access_token_secret=os.getenv("TWITTER_ACCESS_TOKEN_SECRET"),
         )
 
     async def post_text_tweet(self, text: str) -> any:
@@ -57,5 +57,6 @@ class TwitterAsyncWrapper:
         """
         media = self.client.media_upload(filename=image_path)
         response = await self.async_client.create_tweet(
-            text=text, media_ids=[media.media_id])
+            text=text, media_ids=[media.media_id]
+        )
         return response

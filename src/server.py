@@ -20,7 +20,7 @@ async def lifespan(app: FastAPI):
         host=os.getenv("REDIS_HOST", "localhost"),
         port=int(os.getenv("REDIS_PORT", 6379)),
         db=int(os.getenv("REDIS_DB", 0)),
-        clear_on_startup=bool(os.getenv("REDIS_CLEAR_ON_STARTUP", False))
+        clear_on_startup=bool(os.getenv("REDIS_CLEAR_ON_STARTUP", False)),
     )
     app.state.redis_wrapper = redis_wrapper
 
@@ -40,7 +40,7 @@ app = FastAPI(lifespan=lifespan)
 
 
 async def run_server() -> None:
-    logging.info('Application started')
+    logging.info("Application started")
     config = Config(
         app=app,
         host=os.getenv("SERVER_HOST", "localhost"),

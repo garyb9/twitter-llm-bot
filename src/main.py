@@ -8,6 +8,7 @@ from server import run_server
 async def main() -> None:
     await run_server()
 
+
 # Run
 if __name__ == "__main__":
     try:

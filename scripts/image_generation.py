@@ -1,12 +1,10 @@
-
 import os
 import sys
 import asyncio
 import logging
 import json
-sys.path.append(
-    os.path.abspath(os.path.join(os.path.dirname(__file__), '..', 'src'))
-)
+
+sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), "..", "src")))
 import setup_env
 from typing import List
 import llm.openai as openai
@@ -23,6 +21,7 @@ Omit any text from the image. Use oil painting style.
     generated_images = await openai.generate_image_async(prompt=prompt)
 
     generated_images[0].show()
+
 
 # Run
 if __name__ == "__main__":

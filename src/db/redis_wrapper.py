@@ -8,7 +8,9 @@ class RedisClientWrapper:
     def __init__(self):
         self.client: Optional[redis.Redis] = None
 
-    async def connect(self, host='localhost', port=6379, db=0, clear_on_startup=False) -> None:
+    async def connect(
+        self, host="localhost", port=6379, db=0, clear_on_startup=False
+    ) -> None:
         """Asynchronously initialize the Redis connection."""
         try:
             self.client = redis.Redis(host=host, port=port, db=db)
@@ -31,8 +33,7 @@ class RedisClientWrapper:
     def ensure_client_initialized(self):
         """Ensure that the Redis client is initialized."""
         if not self.client:
-            raise Exception(
-                "Redis client not initialized. Call 'connect' first.")
+            raise Exception("Redis client not initialized. Call 'connect' first.")
 
     async def fifo_push(self, name: str, message: str) -> None:
         """Push a message onto a FIFO queue."""
@@ -51,7 +52,9 @@ class RedisClientWrapper:
         result = await self.client.brpop(name, timeout)
         return result[1].decode("utf-8") if result else None
 
-    async def fifo_peek(self, name: str = "default_queue", start: int = 0, end: int = -1) -> list:
+    async def fifo_peek(
+        self, name: str = "default_queue", start: int = 0, end: int = -1
+    ) -> list:
         """
         Peek at messages in a FIFO queue without removing them.
         """
@@ -78,7 +81,7 @@ class RedisClientWrapper:
 def start_redis():
     """Attempt to start a Redis server process."""
     try:
-        subprocess.run(['redis-server', '-p', '6379'], check=True)
+        subprocess.run(["redis-server", "-p", "6379"], check=True)
     except subprocess.CalledProcessError as e:
         logging.error(f"Failed to start Redis process: {e}")
         raise

@@ -4,12 +4,13 @@ from PIL import Image
 from openai import AsyncOpenAI
 from io import BytesIO
 from base64 import decodebytes
-openai_api_key = os.getenv('OPENAI_API_KEY')
-openai_organization = os.getenv('OPENAI_ORG_ID')
+
+openai_api_key = os.getenv("OPENAI_API_KEY")
+openai_organization = os.getenv("OPENAI_ORG_ID")
 
 headers = {
     "Authorization": f"Bearer {openai_api_key}",
-    "OpenAI-Organization": openai_organization
+    "OpenAI-Organization": openai_organization,
 }
 
 client = AsyncOpenAI(
@@ -64,12 +65,13 @@ async def generate_image_async(
         model=model,
         prompt=prompt,
         n=n,
-        quality='hd',
-        size='1024x1792',
-        response_format='b64_json'
+        quality="hd",
+        size="1024x1792",
+        response_format="b64_json",
     )
 
     images = [
-        Image.open(BytesIO(decodebytes(bytes(b64_img.b64_json, "utf-8")))) for b64_img in response.data
+        Image.open(BytesIO(decodebytes(bytes(b64_img.b64_json, "utf-8"))))
+        for b64_img in response.data
     ]
     return images

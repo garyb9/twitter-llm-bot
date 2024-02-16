@@ -2,9 +2,9 @@ name: Lint, Test and Docker CI
 
 on:
   push:
-    branches: [ "main" ]
+    branches: ["main"]
   pull_request:
-    branches: [ "main" ]
+    branches: ["main"]
 
 jobs:
   build:
@@ -13,27 +13,29 @@ jobs:
       matrix:
         python-version: ["3.11"]
     steps:
-    # Checkout
-    - uses: actions/checkout@v3
+      # Checkout
+      - uses: actions/checkout@v3
 
-    # Run PyLint
-    - name: Set up Python ${{ matrix.python-version }}
-      uses: actions/setup-python@v3
-      with:
-        python-version: ${{ matrix.python-version }}
-    - name: Install dependencies
-      run: |
-        python -m pip install --upgrade pip
-        pip install pylint
-    - name: Analysing the code with pylint
-      run: |
-        pylint $(git ls-files '*.py')
-        
-    # Run pytest within the Docker environment
-    - name: Run pytest
-      run: docker-compose run your-service-name pytest
-    
-    # Build the Docker image using docker compose
-    - name: Build Docker image with Docker Compose
-      run: docker-compose build
+      # Run Pytest
+      - name: Set up Python ${{ matrix.python-version }}
+        uses: actions/setup-python@v3
+        with:
+          python-version: ${{ matrix.python-version }}
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install flake8 pytest
+          if [ -f requirements.txt ]; then pip install -r requirements.txt; fi
+      - name: Lint with flake8
+        run: |
+          # stop the build if there are Python syntax errors or undefined names
+          flake8 . --count --select=E9,F63,F7,F82 --show-source --statistics
+          # exit-zero treats all errors as warnings. The GitHub editor is 127 chars wide
+          flake8 . --count --exit-zero --max-complexity=10 --max-line-length=127 --statistics
+      - name: Test with pytest
+        run: |
+          pytest
 
+      # Build the Docker image using docker compose
+      - name: Build Docker image with Docker Compose
+        run: docker-compose build

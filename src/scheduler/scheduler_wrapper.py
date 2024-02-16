@@ -22,7 +22,7 @@ class SchedulerWrapper:
         # Add the periodic jobs first
         self.scheduler.add_job(
             self.periodic_job_time_reshuffle,
-            trigger='cron',
+            trigger="cron",
             hour=0,
             minute=0,
             id="periodic_job_time_reshuffle",
@@ -30,7 +30,7 @@ class SchedulerWrapper:
 
         self.scheduler.add_job(
             self.periodic_job_time_print,
-            trigger='interval',
+            trigger="interval",
             minutes=30,
             id="periodic_job_time_print",
         )
@@ -40,8 +40,9 @@ class SchedulerWrapper:
         self.scheduler.start()
 
         # Add jobs to run immediately
-        run_time = datetime.now(self.scheduler.timezone) + \
-            timedelta(minutes=1)  # run in a minute from now
+        run_time = datetime.now(self.scheduler.timezone) + timedelta(
+            minutes=1
+        )  # run in a minute from now
         formatted_run_time = run_time.strftime("%H:%M")
 
         self.add_job_to_scheduler(
@@ -69,39 +70,43 @@ class SchedulerWrapper:
     def init_sheduler_jobs(self) -> None:
         # Add tweet generation jobs
         times_to_run = self.calculate_run_times(
-            consts.DAILY_NUMBER_OF_TWEET_GENERATIONS)
+            consts.DAILY_NUMBER_OF_TWEET_GENERATIONS
+        )
         self.add_job_to_scheduler(
             scheduler_jobs.generate_random_tweets_job,
             "generate_random_tweets_job",
             times_to_run,
-            self.redis_wrapper
+            self.redis_wrapper,
         )
 
         # Add text tweet posting jobs
         times_to_run = self.calculate_run_times_random(
-            consts.DAILY_NUMBER_OF_TEXT_TWEETS)
+            consts.DAILY_NUMBER_OF_TEXT_TWEETS
+        )
         times_to_run.sort()
         self.add_job_to_scheduler(
             scheduler_jobs.post_text_tweet_job,
             "post_text_tweet_job",
             times_to_run,
-            self.redis_wrapper
+            self.redis_wrapper,
         )
 
         # TODO: add image generation jobs
 
-    def add_job_to_scheduler(self, job_function, job_id_base: str, times_to_run: List[str], *args) -> None:
+    def add_job_to_scheduler(
+        self, job_function, job_id_base: str, times_to_run: List[str], *args
+    ) -> None:
         for i, time in enumerate(times_to_run):
-            hour, minute = map(int, time.split(':'))
+            hour, minute = map(int, time.split(":"))
             job_id = f"{job_id_base}_{i+1}"
 
             self.scheduler.add_job(
                 job_function,
-                trigger='cron',
+                trigger="cron",
                 hour=hour,
                 minute=minute,
                 id=job_id,
-                args=args
+                args=args,
             )
 
         # logging.info(
@@ -114,10 +119,12 @@ class SchedulerWrapper:
         jobs_info = []
         now = datetime.now(self.scheduler.timezone)
         for job in self.scheduler.get_jobs():
-            run_time = job.next_run_time.strftime(
-                "%H:%M") if job.next_run_time else "None"
-            time_until = (job.next_run_time -
-                          now).total_seconds() if job.next_run_time else 0
+            run_time = (
+                job.next_run_time.strftime("%H:%M") if job.next_run_time else "None"
+            )
+            time_until = (
+                (job.next_run_time - now).total_seconds() if job.next_run_time else 0
+            )
             minutes_until = time_until // 60
             seconds_until = time_until % 60
             jobs_info.append(

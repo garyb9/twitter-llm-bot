@@ -97,6 +97,12 @@ or
 python -m pytest
 ```
 
+Linter:
+
+```bash
+pylint *.py
+```
+
 ## Docker Setup
 
 To simplify the setup and ensure a consistent environment for development and production, this project supports Docker. Follow the steps below to get the Twitter bot running inside a Docker container using Docker Compose.

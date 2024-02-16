@@ -3,9 +3,8 @@ import sys
 import asyncio
 import logging
 import json
-sys.path.append(
-    os.path.abspath(os.path.join(os.path.dirname(__file__), '..', 'src'))
-)
+
+sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), "..", "src")))
 import setup_env
 from scheduler.scheduler_jobs import TWEET_QUEUE
 from db.redis_wrapper import RedisClientWrapper
@@ -18,7 +17,7 @@ async def main() -> None:
         host=os.getenv("REDIS_HOST", "localhost"),
         port=int(os.getenv("REDIS_PORT", 6379)),
         db=int(os.getenv("REDIS_DB", 0)),
-        clear_on_startup=bool(os.getenv("REDIS_CLEAR_ON_STARTUP", False))
+        clear_on_startup=bool(os.getenv("REDIS_CLEAR_ON_STARTUP", False)),
     )
 
     tweet_text = await redis_wrapper.fifo_pop(TWEET_QUEUE)
@@ -26,6 +25,7 @@ async def main() -> None:
     tw = TwitterAsyncWrapper()
     response = await tw.post_text_tweet(tweet_text)
     logging.info(response)
+
 
 # Run
 if __name__ == "__main__":
