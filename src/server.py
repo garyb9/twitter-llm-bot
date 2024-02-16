@@ -72,6 +72,7 @@ async def stop_scheduler(request: Request):
 async def get_twitter_queue():
     redis_wrapper: RedisClientWrapper = app.state.redis_wrapper
     messages = await redis_wrapper.fifo_peek(TWEET_QUEUE)
+    messages.reverse()
     if not messages:
         return {"message": f"{TWEET_QUEUE} queue is empty."}
     return messages
