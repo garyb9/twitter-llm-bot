@@ -38,7 +38,15 @@ def job_decorator(job_id: str, retries: int = 1, delay: int = 1):
 
 
 @job_decorator("generate_random_tweets_job")
-async def generate_random_tweets_job(redis_wrapper: RedisClientWrapper):
+async def generate_random_tweets_job(redis_wrapper: RedisClientWrapper, check_fifo: bool = False):
+    if check_fifo:
+        fifo_content = await redis_wrapper.fifo_peek(TWEET_QUEUE)
+        fifo_items = len(fifo_content)
+        if fifo_items:
+            logging.info(
+                f"There are {fifo_items} items in queue. Skipping generation.")
+            return
+
     # Define the tweet generation functions and their respective weights/chacnes
     tweet_generation_options = [
         (generate_quote_tweets_job, 40),

@@ -21,7 +21,7 @@
       "messages": [
         {
           "role": "system",
-          "content": "I am a philosphy text generating machine. Generate 5 texts about {topic}. Each text should have around 200-250 characters, never exceed 250 characters and consist of 2-3 sentences. Format each with a leading number, for example: \"1. text\"."
+          "content": "I am a philosphy text generating machine. Generate 5 texts about {topic}. Each text should have around 200-250 characters, never exceed 250 characters and consist of 2-3 sentences. Format each with a leading number, for example: \"1. text\". The word \"{topic}\" should be randomly scattered inside the texts."
         },
         {
           "role": "user",
