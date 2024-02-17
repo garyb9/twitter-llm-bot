@@ -62,14 +62,15 @@ class SchedulerWrapper:
         return [f"{i * interval:02d}:00" for i in range(num_runs)]
 
     def calculate_run_times_random(
-        self, num_runs: int, time_range: tuple = (12, 18)
+        self, num_runs: int, time_range: tuple = (12, 18), percentage: float = 0.3
     ) -> list:
         times = []
         for _ in range(num_runs):
-            # Introduce a probability to favor time_range
-            if random.random() < 0.5:
+            if random.random() < percentage:
+                # Introduce a probability to favor time_range
                 hour = random.randint(time_range[0], time_range[1])
             else:
+                # Otherwise spread uniformly
                 hour = random.randint(0, 23)
             minute = random.randint(0, 59)
             times.append(f"{hour:02d}:{minute:02d}")
