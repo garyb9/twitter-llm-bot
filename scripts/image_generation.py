@@ -3,24 +3,23 @@ import sys
 import asyncio
 import logging
 
-sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), "..", "src")))
-from setup_env import setup
-
-setup()
+sys.path.insert(
+    0, os.path.abspath(os.path.join(os.path.dirname(__file__), "..", "src"))
+)
+from llm import prompts
 import llm.openai as openai
-from tweet_generation import tweet_generation
 
 
 async def main() -> None:
-    generated_response = await tweet_generation()
+    data_path = os.path.abspath(os.path.join(os.path.dirname(__file__), "..", "data"))
+    image_path = os.path.join(data_path, "sample_pic_19.png")
 
-    prompt = f"""
-Visualize the following quote: ```{generated_response[0]}```. 
-Omit any text from the image. Use oil painting style.
-    """
+    prompt = prompts.prepare_prompt_for_image_model(0)
+    print(f"prompt: {prompt}")
     generated_images = await openai.generate_image_async(prompt=prompt)
-
-    generated_images[0].show()
+    for image in generated_images:
+        image.save(image_path)
+        image.show()
 
 
 # Run

@@ -26,6 +26,14 @@
             "cwd": "${workspaceFolder}"
         },
         {
+            "name": "Python: Image generation",
+            "type": "debugpy",
+            "request": "launch",
+            "program": "${workspaceFolder}/scripts/image_generation.py",
+            "console": "integratedTerminal",
+            "cwd": "${workspaceFolder}"
+        },
+        {
             "name": "Python: Twitter image post",
             "type": "debugpy",
             "request": "launch",

@@ -46,18 +46,21 @@ def prepare_prompt_for_text_model(category: str = None) -> Tuple[List[str], str]
         raise
 
 
-def prepare_prompt_for_image_model(chosen_var: str = None) -> List[str]:
+def prepare_prompt_for_image_model(index: int = None) -> List[str]:
     """
     Prepares and formats a prompt based on the given category and variable.
     This prompt is to be used by a Image Generation model (such as Dalle 3).
     """
     try:
-        prompt_config = random.choice(prompts_config_image)
+        if index != None:
+            prompt_config = prompts_config_image[index]
+        else:
+            prompt_config = random.choice(prompts_config_image)
         message = prompt_config["message"]
 
         if "input_variables" in prompt_config:
             input_variables = {
-                var_name: (random.choice(values) if not chosen_var else chosen_var)
+                var_name: random.choice(values)
                 for var_name, values in prompt_config["input_variables"].items()
             }
 

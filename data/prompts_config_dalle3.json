@@ -1,14 +1,13 @@
 [
     {
-        "message": "Create a high-definition digital painting in a realistic style. The objects should be highly detailed. The composition should feature a black and white katana wielding japanese warrior on top of a completely white background. The setting is to be atmospheric and intense. Please ensure there is ample empty space at the top of the image to allow for text to be added later on. The composition should be balanced to accommodate this additional element without crowding the visual narrative. The top portion of the image should occupy 20% of the vertical space and is an empty background with no object in it"
-    },
-    {
-        "message": "Create a high-definition digital painting in a realistic style. The objects should be highly detailed. The composition should feature a regal figure with a detailed curly beard and hair, crowned with a golden laurel wreath, indicative of ancient nobility. This figure is to be portrayed in profile, gazing towards the cosmos, set against a backdrop of a vibrant galactic sky filled with stars, nebulas, and cosmic dust. The ethereal space should radiate with a spectrum of blues, purples. The setting is to be atmospheric and intense. Please ensure there is ample empty space at the top of the image to allow for text to be added later on. The composition should be balanced to accommodate this additional element without crowding the visual narrative. The resolution should be 1080x1920 pixels. The top portion of the image should occupy 20% of the vertical space and is an empty background with no object in it"
-    },
-    {
-        "message": "Create a high-definition digital painting in a realistic style, formatted for smartphone wallpaper usage at a resolution of 1080x1920 pixels. The composition should feature a {description}, representing a personification of a concept. Keep most of the content within the lower 50% vertical part of the image. The head of the figure should not be drawn above the 50% line vertically from the bottom. The setting is to be atmospheric and intense, with a dark, clouded sky in the background that contributes to the overall gravity and drama of the encounter. Please ensure there is ample empty space at the top of the image to allow for text to be added later on. The composition should be balanced to accommodate this additional element without crowding the visual narrative.",
+        "message": "Create a detailed realistic and bulky herculean muscular {figure}, wearing {attire}, looking to his right, in {motion}, in {location}, {aesthetic} aesthetic, the figure should vertical and mostly in the center part of the image, leave room above it for background, black white and grey colors, randomize additional aesthetic colors, background is mostly dark, a bit of light, shadow, paintbrush, blur with paint, abstract {painting}, expressive brush strokes, on canvas, detailed hd. Make sure the top 30% of the vertical space of the image is mostly background.",
         "input_variables": {
-            "description": ["regal figure with a detailed curly beard and hair, crowned with a golden laurel wreath, indicative of ancient nobility. This figure is to be portrayed in profile, gazing towards the cosmos, set against a backdrop of a vibrant galactic sky filled with stars, nebulas, and cosmic dust. The ethereal space should radiate with a spectrum of blues, purples, and pinks, and be sprinkled with points of light resembling distant stars, adding a sense of depth and wonder"]
+            "figure": ["stoic warrior statue", "fighter monk", "roman greco warrior", "berserker"],
+            "attire": ["garment", "partial warlike armor", "training gi", "heavy armor", "viking armor"], 
+            "painting": ["oil painting", "ink painting"],
+            "motion": ["motion", "training", "medidation", "battle"],
+            "location": ["mountain", "arena", "desert", "training ground"],
+            "aesthetic": ["atmospheric", "intense", "desert", "cyberpunk", "japanese", "chinese"]
           }
     }
 ]
