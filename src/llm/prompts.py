@@ -52,7 +52,7 @@ def prepare_prompt_for_image_model(index: int = None) -> List[str]:
     This prompt is to be used by a Image Generation model (such as Dalle 3).
     """
     try:
-        if index != None:
+        if index is not None:
             prompt_config = prompts_config_image[index]
         else:
             prompt_config = random.choice(prompts_config_image)
