@@ -61,11 +61,21 @@ class SchedulerWrapper:
         interval = 24 // num_runs
         return [f"{i * interval:02d}:00" for i in range(num_runs)]
 
-    def calculate_run_times_random(self, num_runs: int) -> list:
-        return [
-            f"{random.randint(0, 23):02d}:{random.randint(0, 59):02d}"
-            for _ in range(num_runs)
-        ]
+    def calculate_run_times_random(num_runs: int, time_range: tuple = (12, 18)) -> list:
+        times = []
+        for _ in range(num_runs):
+            # Introduce a probability to favor time_range
+            if random.random() < 0.5:
+                hour = random.randint(time_range[0], time_range[1])
+            else:
+                hour = random.randint(0, 23)
+            minute = random.randint(0, 59)
+            times.append(f"{hour:02d}:{minute:02d}")
+        # return [
+        #     f"{random.randint(time_range[0], time_range[1]):02d}:{random.randint(0, 59):02d}"
+        #     for _ in range(num_runs)
+        # ]
+        return times
 
     def init_sheduler_jobs(self) -> None:
         # Add tweet generation jobs
