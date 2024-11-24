@@ -1,14 +1,9 @@
 import sys
 import time
-from llama_cpp import Llama
-from log import logger
+import random
 import logging
-
-# Print to indicate the script is running
-logger.info("Running inference...")
-
-# Start time capture for inference
-start_time = time.time()  # Capture start time
+from log import logger
+from llama_cpp import Llama
 
 
 # Redirect sys.stdout and sys.stderr to the logger (for debug-level inference logs)
@@ -30,6 +25,12 @@ sys.stdout = LoggerStream(
     logger, level=logging.DEBUG
 )  # Capture all inference logs at DEBUG level
 sys.stderr = LoggerStream(logger, level=logging.DEBUG)  # Capture errors at DEBUG level
+
+# Print to indicate the script is running
+logger.info("Running inference...")
+
+# Start time capture for inference
+start_time = time.time()  # Capture start time
 
 # Initialize the model
 llm = Llama.from_pretrained(
@@ -62,12 +63,18 @@ response = llm.create_chat_completion(
         {"role": "system", "content": system_prompt},
         {"role": "user", "content": question_prompt},
     ],
-    temperature=2,  # Increase randomness in responses
-    max_tokens=280,  # Limit response length
-    top_p=1.0,  # Allow the model to consider the top 100% of probability mass (more diverse)
-    presence_penalty=1.0,  # Penalize the model for repeating concepts from previous responses
-    frequency_penalty=1.0,  # Penalize the model for repeating words or phrases
+    temperature=random.uniform(0.7, 2.0),  # Increase randomness in responses
+    top_p=random.uniform(
+        0.9, 1.0
+    ),  # Allow the model to consider the top 100% of probability mass (more diverse)
+    presence_penalty=random.uniform(
+        0.5, 1.5
+    ),  # Penalize the model for repeating concepts from previous responses
+    frequency_penalty=random.uniform(
+        0.5, 1.5
+    ),  # Penalize the model for repeating words or phrases
     stream=False,  # Ensure no streaming response
+    # max_tokens=280,  # Limit response length
 )
 
 model_response = response["choices"][0]["message"]["content"].strip('"')
